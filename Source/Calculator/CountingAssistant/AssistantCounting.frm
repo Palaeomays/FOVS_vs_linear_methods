@@ -81,7 +81,7 @@ Attribute VB_Exposed = False
 '
 
 Private Sub UserForm_Initialize()
-    MsgBox "The counting assistant is designed to enable up to nine target and one marker specimen categories to be counted concurrently." & vbNewLine & vbNewLine & "First: label the specimen categories you wish to count." & vbNewLine & "Second: perform a count of the first field of view." & vbNewLine & "Third: Press the 'next FOV' button when you transition to a new field of view." & vbNewLine & vbNewLine & "The hotkeys enable the rapid counting of multiple specimen categories using the 0–9 keys on a keyboard or numpad." & vbNewLine & vbNewLine & "The optional timer enables the automatic calculation of data collection effort and the determination of the most efficient count method.", vbInformation
+    MsgBox "The counting assistant is designed to enable up to nine target and one marker specimen categories to be counted concurrently." & vbNewLine & vbNewLine & "First: label the specimen categories you wish to count." & vbNewLine & "Second: perform a count of the first field of view." & vbNewLine & "Third: Press the 'next FOV' button when you transition to a new field of view." & vbNewLine & vbNewLine & "The hotkeys enable the rapid counting of multiple specimen categories using the 0â€“9 keys on a keyboard or numpad." & vbNewLine & vbNewLine & "The optional timer enables the automatic calculation of data collection effort and the determination of the most efficient count method.", vbInformation
 
     
     ' Check if certain sheets are present. Iterate through all worksheets in the workbook.
