@@ -1,13 +1,13 @@
 # FOVS_vs_linear_methods
 This ReadMe file was generated on 2024-06-02 by Marcos Amores
 
-General information
+## General information
 
-1. Title:
+### 1. Title:
    
   Absolute abundance calculator (v1.0)
 
-3. Leading/corresponding author:
+### 2. Leading/corresponding author:
    
   Name: Chris Mays
 
@@ -17,20 +17,20 @@ General information
   
   Email: cmays@ucc.ie
 
-4. Date of present version:
+### 3. Date of present version:
    
   2024-06-02
 
 
-Sharing/Access Information
+## Sharing/Access Information
 
-1. Licenses/restrictions placed on the code:
+### 1. Licenses/restrictions placed on the code:
    
   Absolute abundance calculator © 2024 by Chris Mays, Marcos Amores, and Anthony Mays. Licensed under Creative Commons Attribution-ShareAlike 4.0 International
 
-Troubleshooting
+## Troubleshooting
 
-1. Microsoft has blocked macros from running because the source of this file is untrusted.
+### 1. Microsoft has blocked macros from running because the source of this file is untrusted.
 
   Please see the official guide on how to resolve this at the Microsoft Support website, link below.
   
