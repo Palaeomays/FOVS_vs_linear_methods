@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} AssistantCounting 
-   Caption         =   "Counting Assistant"
-   ClientHeight    =   8115
+   Caption         =   "Counting assistant"
+   ClientHeight    =   8175
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   9165.001
+   ClientWidth     =   8520.001
    OleObjectBlob   =   "AssistantCounting.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -42,16 +42,16 @@ Attribute VB_Exposed = False
     Dim Total9 As Long
     Dim Total0 As Long
     
-    Dim Y3_1 As Long
-    Dim Y3_2 As Long
-    Dim Y3_3 As Long
-    Dim Y3_4 As Long
-    Dim Y3_5 As Long
-    Dim Y3_6 As Long
-    Dim Y3_7 As Long
-    Dim Y3_8 As Long
-    Dim Y3_9 As Long
-    Dim Y3_0 As Long
+    Dim Y3_1 As Double
+    Dim Y3_2 As Double
+    Dim Y3_3 As Double
+    Dim Y3_4 As Double
+    Dim Y3_5 As Double
+    Dim Y3_6 As Double
+    Dim Y3_7 As Double
+    Dim Y3_8 As Double
+    Dim Y3_9 As Double
+    Dim Y3_0 As Double
     
     Dim SD1 As Double
     Dim SD2 As Double
@@ -76,12 +76,16 @@ Attribute VB_Exposed = False
     Dim CurrentFOV As Long
 
 
+Private Sub ToggleButton_Hotkeys_Change()
+
+End Sub
+
 '
 ' Startup
 '
 
 Private Sub UserForm_Initialize()
-    MsgBox "The counting assistant is designed to enable up to nine target and one marker specimen categories to be counted concurrently." & vbNewLine & vbNewLine & "First: label the specimen categories you wish to count." & vbNewLine & "Second: perform a count of the first field of view." & vbNewLine & "Third: Press the 'next FOV' button when you transition to a new field of view." & vbNewLine & vbNewLine & "The hotkeys enable the rapid counting of multiple specimen categories using the 0â€“9 keys on a keyboard or numpad." & vbNewLine & vbNewLine & "The optional timer enables the automatic calculation of data collection effort and the determination of the most efficient count method.", vbInformation
+    MsgBox "The counting assistant is designed to enable up to nine target and one marker specimen categories to be counted concurrently." & vbNewLine & vbNewLine & "First: label the specimen categories you wish to count." & vbNewLine & "Second: perform a count of the first field of view." & vbNewLine & "Third: Press the 'next FOV' button when you transition to a new field of view." & vbNewLine & vbNewLine & "The hotkeys enable the rapid counting of multiple specimen categories using the 0–9 keys on a keyboard or numpad." & vbNewLine & vbNewLine & "The optional timer enables the automatic calculation of data collection effort and the determination of the most efficient count method." & vbNewLine & vbNewLine & "IMPORTANT: for valid statistics, please ensure that you include all specimen categories before counting.", vbInformation
 
     
     ' Check if certain sheets are present. Iterate through all worksheets in the workbook.
@@ -1008,6 +1012,12 @@ Private Sub CommandButton_Next_Click()
 '    End If
     
     ' Store input values in memory as longs.
+    
+    If Len(txt_SampleName.Text) > 1 Then
+        SampleName = txt_SampleName.Text
+    Else
+    End If
+
     If Not txt_Now1.Value = "" Then
         Now1 = CLng(txt_Now1.Value)
     Else
@@ -1608,6 +1618,7 @@ Private Sub CommandButton_Next_Click()
     End If
     
     CountingSaved = True
+        
 End Sub
 
 '
@@ -1615,98 +1626,116 @@ End Sub
 '
 
 Private Sub CommandButton_Save_Click()
-    TimerRunning = False
-    X = Worksheets("Counting (Summary)").Range("AR2").Value
-    N = Total0
+    If SavedVariablesCountingEndExists Then
     
-    If OriginFOVSTarget Or OriginFOVSMarker Then
-        response = MsgBox("Is this dataset a calibration count (FOVS method)?", vbQuestion + vbYesNo, "Calibration Count?")
-        ' Check user response
-        If response = vbYes Then
+        If TimerRunning Then
+        CommandButton_Timer_Click
+        TimerRunning = False
+        End If
+        
+        X = Worksheets("Counting (Summary)").Range("AR2").Value
+        N = Total0
+        
+        If OriginFOVSTarget Or OriginFOVSMarker Then
+            response = MsgBox("Is this dataset a calibration count (FOVS method)?", vbQuestion + vbYesNo, "Calibration Count?")
+            ' Check user response
+            If response = vbYes Then
+                N3C = NumFOV + 1
+                If Not Worksheets("Counting (Exhaustive)").Range("X2").Value = Worksheets("Counting (Summary)").Range("AR2").Value Then
+                    s3 = Worksheets("Counting (Summary)").Range("AS2").Value
+                Else
+                End If
+                
+                If IsNumeric(txt_TimeTotal.Value) Then
+                    TimeTotal = CLng(txt_TimeTotal.Value)
+                End If
+            Else
+                N3F = NumFOV + 1
+            End If
+        Else
             N3C = NumFOV + 1
-            If Not Worksheets("Counting (Exhaustive)").Range("X2").Value = Worksheets("Counting (Summary)").Range("AR2").Value Then
-                s3 = Worksheets("Counting (Summary)").Range("AS2").Value
+            
+            If IsNumeric(txt_TimeTotal.Value) Then
+                TimeTotal = CLng(txt_TimeTotal.Value)
+            End If
+        End If
+        
+        'Update userforms with new counts.
+        If OriginStarter Then
+            CalculatorStart.txt_X.Value = X
+            CalculatorStart.txt_N.Value = N
+            CalculatorStart.txt_N3c.Value = N3C
+            CalculatorStart.txt_TimeTotal.Value = TimeTotal
+            
+            OriginStarter = False
+            
+        '   CalculatorStart.Hide
+            CalculatorStart.Show
+            
+        ElseIf OriginLinear Then
+            CalculatorLinear.txt_X.Value = X
+            CalculatorLinear.txt_N.Value = N
+            
+            OriginLinear = False
+            
+            CalculatorLinear.Hide
+            CalculatorLinear.Show
+            
+        ElseIf OriginFOVSTarget Then
+            CalculatorFOVSTarget.txt_N_FOVS.Value = N
+            If response = vbNo Then
+                CalculatorFOVSTarget.txt_N3f.Value = N3F
             Else
             End If
-            TimeTotal = CLng(txt_TimeTotal.Value)
-        Else
-            N3F = NumFOV + 1
-        End If
-    End If
-    
-    'Update userforms with new counts.
-    If OriginStarter Then
-        CalculatorStart.txt_X.Value = X
-        CalculatorStart.txt_N.Value = N
-        CalculatorStart.txt_N3c.Value = N3C
-        CalculatorStart.txt_TimeTotal.Value = TimeTotal
-        
-        OriginStarter = False
-        
-    '   CalculatorStart.Hide
-        CalculatorStart.Show
-        
-    ElseIf OriginLinear Then
-        CalculatorLinear.txt_X.Value = X
-        CalculatorLinear.txt_N.Value = N
-        
-        OriginLinear = False
-        
-        CalculatorLinear.Hide
-        CalculatorLinear.Show
-        
-    ElseIf OriginFOVSTarget Then
-        CalculatorFOVSTarget.txt_N_FOVS.Value = N
-        If response = vbNo Then
-            CalculatorFOVSTarget.txt_N3f.Value = N3F
-        Else
-        End If
-        
-        OriginFOVSTarget = False
-        
-        CalculatorFOVSTarget.Hide
-        CalculatorFOVSTarget.Show
-        
-    ElseIf OriginFOVSMarker Then
-        CalculatorFOVSMarker.txt_X_FOVS.Value = X
-        If response = vbNo Then
-            CalculatorFOVSMarker.txt_N3f.Value = N3F
+            
+            OriginFOVSTarget = False
+            
+            CalculatorFOVSTarget.Hide
+            CalculatorFOVSTarget.Show
+            
+        ElseIf OriginFOVSMarker Then
+            CalculatorFOVSMarker.txt_X_FOVS.Value = X
+            If response = vbNo Then
+                CalculatorFOVSMarker.txt_N3f.Value = N3F
+            Else
+            End If
+            
+            OriginFOVSMarker = False
+            
+            CalculatorFOVSMarker.Hide
+            CalculatorFOVSMarker.Show
+            
+        ElseIf OriginCountingEffort Then
+            CountingEffort.txt_X.Value = X
+            CountingEffort.txt_N.Value = N
+            If response = vbYes Then
+                CountingEffort.txt_N3c.Value = N3C
+            Else
+            End If
+            CountingEffort.txt_TimeTotal.Value = TimeTotal
+            
+            OriginCountingEffort = False
+            
+            CountingEffort.Hide
+            CountingEffort.Show
+            
+        ElseIf OriginCalibrationFOV Then
+            CalibratorFOV.txt_X_FOVS.Value = X
+            CalibratorFOV.txt_N3c.Value = N3C
+            CalibratorFOV.txt_S3.Value = s3
+            
+            OriginCalibrationFOV = False
+            
+            CalibratorFOV.Hide
+            CountingEffort.Show
         Else
         End If
         
-        OriginFOVSMarker = False
-        
-        CalculatorFOVSMarker.Hide
-        CalculatorFOVSMarker.Show
-        
-    ElseIf OriginCountingEffort Then
-        CountingEffort.txt_X.Value = X
-        CountingEffort.txt_N.Value = N
-        If response = vbYes Then
-            CountingEffort.txt_N3c.Value = N3C
-        Else
-        End If
-        CountingEffort.txt_TimeTotal.Value = TimeTotal
-        
-        OriginCountingEffort = False
-        
-        CountingEffort.Hide
-        CountingEffort.Show
-        
-    ElseIf OriginCalibrationFOV Then
-        CalibratorFOV.txt_X_FOVS.Value = X
-        CalibratorFOV.txt_N3c.Value = N3C
-        CalibratorFOV.txt_S3.Value = s3
-        
-        OriginCalibrationFOV = False
-        
-        CalibratorFOV.Hide
-        CountingEffort.Show
+        ' Move saved count end variables to the next row so as to not overwrite
+        dataRow = dataRow + 1
     Else
+        CommandButton_Next_Click
     End If
-    
-    ' Move saved count end variables to the next row so as to not overwrite
-    dataRow = dataRow + 1
 
 End Sub
 
