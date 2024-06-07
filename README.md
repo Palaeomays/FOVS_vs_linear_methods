@@ -37,7 +37,8 @@ This ReadMe file was generated on 2024-06-02 by Marcos Amores
   https://support.microsoft.com/en-us/topic/a-potentially-dangerous-macro-has-been-blocked-0952faa0-37e7-4316-b61d-5b5ed6024216
 
 
-### Matlab code for simulations
+
+# Matlab code for simulations
 The codes used to generate the simulation data in this paper have not been optimised, and have some components that are either not used or not fully implemented. However, in the interests of full transparency, we include the exact versions of the code that we used for our results below.
 
 ## Data for S5–S15 Tables and S17 Fig
