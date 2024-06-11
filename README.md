@@ -114,7 +114,7 @@ fopt: Not used. Set to 1.
 
 ## Data for Fig 8
 
-###Code:
+### Code:
 
 [Main] PrecWRTWorkV2.m
 [Dependent] WorkSimV2.m
@@ -124,25 +124,25 @@ fopt: Not used. Set to 1.
 
 Specify the following variables in PrecWRTWorkV2.m
 
-[Line 7] its: The number of independent Monte Carlo instances to generate for each set of parameters.
+* [Line 7] its: The number of independent Monte Carlo instances to generate for each set of parameters.
 
-[Line 8] bigfx: The number of calibration counts for the "high calibration counts" sequence in Fig 8 (black plus).
+* [Line 8] bigfx: The number of calibration counts for the "high calibration counts" sequence in Fig 8 (black plus).
 
-[Line 9] medfx: The number of calibration counts for the "medium calibration counts" sequence in Fig 8 (blue stars).
+* [Line 9] medfx: The number of calibration counts for the "medium calibration counts" sequence in Fig 8 (blue stars).
 
-[Line 10] smallfx: The number of calibration counts for the "low calibration counts" sequence in Fig 8 (red stars).
+* [Line 10] smallfx: The number of calibration counts for the "low calibration counts" sequence in Fig 8 (red stars).
 
-[Lines 19–24] params: [Mx, Mx, tlim, fnmax, omega]
+* [Lines 19–24] params: [Mx, Mx, tlim, fnmax, omega]
 
-Mx: The total number of targets on each virtual slide.
+* Mx: The total number of targets on each virtual slide.
 
-Mn: The total number of markers on each virtual slide.
+* Mn: The total number of markers on each virtual slide.
 
-tlim: (Linear method) the number of targets to count in the window.
+* tlim: (Linear method) the number of targets to count in the window.
 
-fnmax: Not used. Set to 1.
+* fnmax: Not used. Set to 1.
 
-omega: This is the field of view transition factor (ω).
+* omega: This is the field of view transition factor (ω).
 
 Note: Multiple rows of this variable can be specified to run multiple batches, via: [(first batch parameters); (second batch parameters); ...]
  
