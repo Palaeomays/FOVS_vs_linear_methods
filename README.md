@@ -69,13 +69,13 @@ tab: value of the dose error used in Eqns 2 and 5.
 
 Note: Multiple rows of this variable can be specified to run multiple batches, via: [(first batch parameters); (second batch parameters); ...]
 
-[Line 27] alpha: this is the field of view transition factor (ω). Default is ω=2.
+[Line 27] alpha: this is the field-of-view transition factor (ω). Default is ω=2.
 
 [Line 33] work: the fixed value of work that the program tries to achieve for each method.
 
 Linear method: Eqn 9 is used to choose the number of targets to count.
 
-FOVS method: Eqns 14 and 15 are used to choose the optimal number of calibration and full count fields of view, via the code FOVoptimiserV1.m.
+FOVS method: Eqns 14 and 15 are used to choose the optimal number of calibration- and extrapolation-count fields of view, via the code FOVoptimiserV1.m.
 
 ### Notes:
 
@@ -105,7 +105,7 @@ Mn: The total number of markers on each virtual slide.
 
 tlim: (Linear method) the number of targets to count in the window.
 
-fn: (FOVS method) the number of full count fields of view in which to count markers.
+fn: (FOVS method) the number of extrapolation-count fields of view in which to count markers.
 
 its: The number of independent Monte Carlo instances to generate.
 
