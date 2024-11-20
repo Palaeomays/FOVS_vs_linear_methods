@@ -6,7 +6,6 @@ Attribute VB_Name = "Changelog"
 '#####
 
 '# Features
-'- TODO Added import dataset button to populate calculator with previously stored information.
 '- Added a Glossary userbox that explains the symbology.
 '- Resetting the timer now requires user confirmation.
 
@@ -25,7 +24,7 @@ Attribute VB_Name = "Changelog"
 '- N3F (full counts) changed to N3E (extrapolation counts).
 
 '# Calculations
-'- Fixe issue with the Gamma function for C4 calculation when the number of calibration count fields-of-view was equal to 1.
+'- Fixed issue with the Gamma function for C4 calculation when the number of calibration count fields-of-view was equal to 1.
 '- Avoided division by 0 when calculating u-hat values when marker information is not presently stored in memory in the FOV calibration userform.
 
 '# Code
