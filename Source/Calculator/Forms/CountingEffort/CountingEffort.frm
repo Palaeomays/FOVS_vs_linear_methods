@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CountingEffort 
    Caption         =   "Optimisation data"
-   ClientHeight    =   3735
+   ClientHeight    =   4095
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   7350
+   ClientWidth     =   4575
    OleObjectBlob   =   "CountingEffort.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -454,14 +454,14 @@ Private Sub CommandButtonTimer_Click()
         TimerRunning = True
         StartTime = Timer ' Get the current time
 
-        CommandButtonTimer.Caption = "Pause timer"
-        CommandButtonClearTimer.Visible = True 'Make reset button visible.
+        CommandButtonTimer.Caption = "Pause timer" 'Change text to this while timer is running.
+        CommandButtonClearTimer.Enabled = True
         
         Do While TimerRunning
-            txt_TimeTotal.Locked = True ' Disable the textbox
-            ElapsedSeconds = Timer - StartTime + PausedTime ' Calculate elapsed time in seconds
-            txt_TimeTotal.Text = Format(ElapsedSeconds, "0") ' Display elapsed time in textbox
-            DoEvents ' Allow other events to be processed
+            txt_TimeTotal.Locked = True ' Disable the textbox from being edited.
+            ElapsedSeconds = Timer - StartTime + PausedTime ' Calculate elapsed time in seconds.
+            txt_TimeTotal.Text = Format(ElapsedSeconds, "0.0") ' Display elapsed time in text box.
+            DoEvents ' Allow other events to be processed.
         Loop
     Else
         TimerRunning = False
@@ -470,20 +470,32 @@ Private Sub CommandButtonTimer_Click()
     End If
 End Sub
 
-Private Sub CommandButtonClearTimer_Click()
-    ' Clear the results by updating the captions of labels or values of text boxes
-    txt_TimeTotal.Locked = False
-    ElapsedSeconds = 0
-    PausedTime = 0
-    txt_TimeTotal.Text = "" ' Update the textbox to display 0.
-    CommandButtonTimer.Caption = "Start timer" ' Reset the caption of the timer button
-    CommandButtonClearTimer.Visible = False 'Make reset button invisible.
+    Private Sub CommandButtonClearTimer_Click()
     
-    ' If the timer was running, stop it
-    If TimerRunning Then
-        TimerRunning = False
-    End If
-End Sub
+        If IsNumeric(txt_TimeTotal) Then 'Check if time value is not empty.
+            response = MsgBox("This will reset the timer. Do you want to continue?", vbQuestion + vbYesNo + vbDefaultButton2, "Reset timer?")
+    
+            ' Check response.
+            If response = vbNo Then 'Clear inputs.
+                Exit Sub
+            Else
+                ' Do nothing.
+            End If
+        End If
+
+        ' Clear the results by updating the captions of labels or values of text boxes.
+        txt_TimeTotal.Locked = False
+        ElapsedSeconds = 0
+        PausedTime = 0
+        txt_TimeTotal.Text = "0.0" ' Update the textbox to display zero.
+        CommandButtonTimer.Caption = "Start timer" ' Reset the caption of the timer button.
+        CommandButtonClearTimer.Enabled = False
+        
+        ' If the timer was running, stop it.
+        If TimerRunning Then
+            TimerRunning = False
+        End If
+    End Sub
 
 '
 ' Shutdown

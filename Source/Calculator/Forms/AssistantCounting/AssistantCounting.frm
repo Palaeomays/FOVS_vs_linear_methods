@@ -1651,7 +1651,7 @@ Private Sub CommandButton_Save_Click()
                     TimeTotal = CLng(txt_TimeTotal.Value)
                 End If
             Else
-                N3F = NumFOV + 1
+                N3E = NumFOV + 1
             End If
         Else
             N3C = NumFOV + 1
@@ -1685,7 +1685,7 @@ Private Sub CommandButton_Save_Click()
         ElseIf OriginFOVSTarget Then
             CalculatorFOVSTarget.txt_N_FOVS.Value = N
             If response = vbNo Then
-                CalculatorFOVSTarget.txt_N3f.Value = N3F
+                CalculatorFOVSTarget.txt_N3E.Value = N3E
             Else
             End If
             
@@ -1697,7 +1697,7 @@ Private Sub CommandButton_Save_Click()
         ElseIf OriginFOVSMarker Then
             CalculatorFOVSMarker.txt_X_FOVS.Value = X
             If response = vbNo Then
-                CalculatorFOVSMarker.txt_N3f.Value = N3F
+                CalculatorFOVSMarker.txt_N3E.Value = N3E
             Else
             End If
             
@@ -1770,36 +1770,51 @@ End Sub
 ' Extra
 '
 
-Private Sub CommandButton_Timer_Click()
-    If TimerRunning = False Then
-        CommandButton_Timer.BackColor = RGB(224, 224, 224) ' Grey colour.
-        TimerRunning = True ' Start the timer.
-        StartTime = Timer ' Get the current time
-        CommandButton_Timer.Caption = "Pause Timer" ' Change text.
+    Private Sub CommandButton_Timer_Click()
+        If TimerRunning = False Then
+           ' Start the timer
+            TimerRunning = True
+            StartTime = Timer ' Get the current time
+    
+            CommandButton_Timer.Caption = "Pause timer" 'Change text to this while timer is running.
+            CommandButton_ClearTimer.Enabled = True
+            
+            Do While TimerRunning
+                txt_TimeTotal.Locked = True ' Disable the textbox from being edited.
+                ElapsedSeconds = Timer - StartTime + PausedTime ' Calculate elapsed time in seconds.
+                txt_TimeTotal.Text = Format(ElapsedSeconds, "0.0") ' Display elapsed time in text box.
+                DoEvents ' Allow other events to be processed.
+            Loop
+        Else
+            TimerRunning = False
+            PausedTime = ElapsedSeconds ' Store the elapsed time when pausing
+            CommandButton_Timer.Caption = "Resume timer"
+        End If
+    End Sub
 
-        Do While TimerRunning
-            txt_TimeTotal.Locked = True ' Disable the textbox
-            ElapsedSeconds = Timer - StartTime + PausedTime ' Calculate elapsed time in seconds.
-            txt_TimeTotal.Text = Format(ElapsedSeconds, "0") ' Display elapsed time in textbox.
-            DoEvents ' Allow other events to be processed.
-        Loop
-    Else
-        TimerRunning = False ' Stop the timer.
-        PausedTime = ElapsedSeconds ' Store the elapsed time when pausing.
-        CommandButton_Timer.Caption = "Resume Timer" ' Change text.
-    End If
-End Sub
+    Private Sub CommandButton_ClearTimer_Click()
+    
+        If IsNumeric(txt_TimeTotal) Then 'Check if time value is not empty.
+            response = MsgBox("This will reset the timer. Do you want to continue?", vbQuestion + vbYesNo + vbDefaultButton2, "Reset timer?")
+    
+            ' Check response.
+            If response = vbNo Then 'Clear inputs.
+                Exit Sub
+            Else
+                ' Do nothing.
+            End If
+        End If
 
-Private Sub CommandButton_ClearTimer_Click()
-    ' Clear the results by updating the captions of labels or values of text boxes.
-    txt_TimeTotal.Locked = False ' Enable the textbox.
-    ElapsedSeconds = 0 ' Reset variable.
-    PausedTime = 0 ' Reset variable.
-    txt_TimeTotal.Text = "" ' Update the textbox to be empty.
-    CommandButton_Timer.Caption = "Start Timer" ' Reset the caption of the timer button.
-    CommandButton_Timer.BackColor = &H8080FF    ' Red colour.
-
-    If TimerRunning Then ' If the timer was running, stop it.
-        TimerRunning = False
-    End If
-End Sub
+        ' Clear the results by updating the captions of labels or values of text boxes.
+        txt_TimeTotal.Locked = False
+        ElapsedSeconds = 0
+        PausedTime = 0
+        txt_TimeTotal.Text = "0.0" ' Update the textbox to display zero.
+        CommandButton_Timer.Caption = "Start timer" ' Reset the caption of the timer button.
+        CommandButton_ClearTimer.Enabled = False
+        
+        ' If the timer was running, stop it.
+        If TimerRunning Then
+            TimerRunning = False
+        End If
+    End Sub

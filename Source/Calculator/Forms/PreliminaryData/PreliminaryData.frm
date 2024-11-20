@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} PreliminaryData 
    Caption         =   "Preliminary data"
-   ClientHeight    =   4695
+   ClientHeight    =   4455
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   9390.001
+   ClientWidth     =   5895
    OleObjectBlob   =   "PreliminaryData.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -103,9 +103,9 @@ Attribute VB_Exposed = False
         ' Check if origin is from Linear or FOVS. Changes text and color from red to green.
             
         If LinearChosen Then
-            CommandButtonSkipPerliminary.Caption = "Skip to linear data collection"
+            CommandButtonSkipPerliminary.Caption = "Skip to linear" & vbCrLf & "data collection"
         ElseIf (FOVSTargetChosen Or TargetSuggested) Or (FOVSMarkerChosen Or MarkerSuggested) Then
-            CommandButtonSkipPerliminary.Caption = "Skip to FOVS data collection"
+            CommandButtonSkipPerliminary.Caption = "Skip to FOVS" & vbCrLf & "data collection"
         End If
         
     End Sub
@@ -597,7 +597,7 @@ Attribute VB_Exposed = False
             
             If FOVSTargetChosen Or TargetSuggested Then
                 If FOVTransitionEffort <> 0 Then 'FOVS Target
-                    eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3F) + N
+                    eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3E) + N
                     deltastar = uhat * Sqr((FOVTransitionEffort + Y3x) / ((FOVTransitionEffort * uhat) + Y3x))
                 Else
                     ' FOVTransitionEffort is equal to 0, do not run calculation
@@ -606,7 +606,7 @@ Attribute VB_Exposed = False
             
             If FOVSMarkerChosen Or MarkerSuggested Then
                 If FOVTransitionEffort <> 0 Then 'FOVS Marker
-                    eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3F) + N
+                    eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3E) + N
                     deltastar = uhat * Sqr((FOVTransitionEffort + (Y3n * uhat)) / ((FOVTransitionEffort * uhat) + (Y3n * uhat)))
                 Else
                     ' FOVTransitionEffort is equal to 0, do not run calculation
@@ -622,11 +622,11 @@ Attribute VB_Exposed = False
             ElseIf Not LinearChosen Then
                 If FOVSTargetChosen Or TargetSuggested Then
                     Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (FOVTransitionEffort / uhat)))) / ((Y3x * (Sqr(Y3x + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-                    Nstar3F = (uhat / (((LevelError / 100) * (LevelError / 100)) - ((N1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (uhat * FOVTransitionEffort)))) / (Y3x * (Sqr(Y3x + (uhat * FOVTransitionEffort))))
+                    Nstar3E = (uhat / (((LevelError / 100) * (LevelError / 100)) - ((N1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (uhat * FOVTransitionEffort)))) / (Y3x * (Sqr(Y3x + (uhat * FOVTransitionEffort))))
                     eF_sigmabar = ((2 * Y3x) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr((Y3x + FOVTransitionEffort) * (Y3x + (uhat * FOVTransitionEffort)))))) / (Y3x * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
                 ElseIf FOVSMarkerChosen Or MarkerSuggested Then
                     Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + (Sqr(Y3n + (FOVTransitionEffort / uhat)))) / ((Y3n * (Sqr(Y3n + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-                    Nstar3F = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
+                    Nstar3E = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
                     eF_sigmabar = ((2 * (Y3n * uhat)) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr(((Y3n * uhat) + FOVTransitionEffort) * ((Y3n * uhat) + (uhat * FOVTransitionEffort)))))) / ((Y3n * uhat) * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
                 End If
             End If
@@ -710,12 +710,12 @@ Attribute VB_Exposed = False
             StartTime = Timer ' Get the current time
     
             CommandButtonTimer.Caption = "Pause timer" 'Change text to this while timer is running.
-            CommandButtonClearTimer.Visible = True 'Make reset button visible.
+            CommandButtonClearTimer.Enabled = True
             
             Do While TimerRunning
                 txt_TimeTotal.Locked = True ' Disable the textbox from being edited.
                 ElapsedSeconds = Timer - StartTime + PausedTime ' Calculate elapsed time in seconds.
-                txt_TimeTotal.Text = Format(ElapsedSeconds, "0") ' Display elapsed time in text box.
+                txt_TimeTotal.Text = Format(ElapsedSeconds, "0.0") ' Display elapsed time in text box.
                 DoEvents ' Allow other events to be processed.
             Loop
         Else
@@ -728,13 +728,25 @@ Attribute VB_Exposed = False
     'Reset timer.
     
     Private Sub CommandButtonClearTimer_Click()
+    
+        If IsNumeric(txt_TimeTotal) Then 'Check if time value is not empty.
+            response = MsgBox("This will reset the timer. Do you want to continue?", vbQuestion + vbYesNo + vbDefaultButton2, "Reset timer?")
+    
+            ' Check response.
+            If response = vbNo Then 'Clear inputs.
+                Exit Sub
+            Else
+                ' Do nothing.
+            End If
+        End If
+
         ' Clear the results by updating the captions of labels or values of text boxes.
         txt_TimeTotal.Locked = False
         ElapsedSeconds = 0
         PausedTime = 0
-        txt_TimeTotal.Text = "" ' Update the textbox to display nothing.
+        txt_TimeTotal.Text = "0.0" ' Update the textbox to display zero.
         CommandButtonTimer.Caption = "Start timer" ' Reset the caption of the timer button.
-        CommandButtonClearTimer.Visible = False 'Make reset button invisible.
+        CommandButtonClearTimer.Enabled = False
         
         ' If the timer was running, stop it.
         If TimerRunning Then

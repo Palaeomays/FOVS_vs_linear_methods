@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorStart 
-   Caption         =   "Absolute abundance calculator v1.0 - Optimisation data & method determination"
-   ClientHeight    =   7935
+   Caption         =   "Absolute abundance calculator v1.1.0"
+   ClientHeight    =   7095
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   9135.001
+   ClientWidth     =   6015
    OleObjectBlob   =   "CalculatorStart.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -20,11 +20,13 @@ Attribute VB_Exposed = False
 
 Private StarterCalculationRun As Boolean
    
+
 '
 ' Startup
 '
 
 Private Sub UserForm_Initialize()
+
     'Introductory message. 'TODO include DOI when ready.
     If Not IntroductionGiven Then
         IntroductionGiven = True
@@ -37,115 +39,57 @@ End Sub
 '
 ' Inputs
 '
-    'Make sure only numbers are inserted.
+    ' Make inputs only take integers (0-9).
+        ' X
+        Private Sub txt_X_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace (if not already entered).
+            InputIntegers KeyAscii, txt_X.Text
+        End Sub
     
-    Private Sub txt_X_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace (if not already entered).
-        Select Case KeyAscii
-            Case 8 ' Backspace.
-            Case 49 To 57, 97 To 105 ' Numbers 1-9 and Numpad numbers 0-9.
-            Case 48, 96 ' Numbers 0 and Numpad 0.
-            If Len(txt_X.Text) > 0 Then ' Allow input if the textbox is not empty.
-                ' Do nothing, allow input.
-            Else
-                KeyAscii = 0 ' Disallow input if the textbox is empty.
-            End If
-            Case Else
-                KeyAscii = 0 ' Disallow other characters.
-        End Select
-    End Sub
+        ' N
+        Private Sub txt_N_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered).
+            InputIntegers KeyAscii, txt_N.Text
+        End Sub
     
-    Private Sub txt_N_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered).
-        Select Case KeyAscii
-            Case 8 ' Backspace.
-            Case 49 To 57, 97 To 105 ' Numbers 1-9 and Numpad numbers 0-9.
-            Case 48, 96 ' Numbers 0 and Numpad 0.
-            If Len(txt_N.Text) > 0 Then ' Allow input if the textbox is not empty.
-                ' Do nothing, allow input.
-            Else
-                KeyAscii = 0 ' Disallow input if the textbox is empty.
-            End If
-            Case Else
-                KeyAscii = 0 ' Disallow other characters.
-        End Select
-    End Sub
+        ' N3C
+        Private Sub txt_N3c_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered).
+            InputIntegers KeyAscii, txt_N3c.Text
+        End Sub
+        
+        ' TimeFOV
+        Private Sub txt_TimeFOV_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered)
+            InputIntegers KeyAscii, txt_TimeFOV.Text
+        End Sub
     
-    Private Sub txt_N3c_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered).
-        Select Case KeyAscii
-            Case 8 ' Backspace.
-            Case 49 To 57, 97 To 105 ' Numbers 1-9 and Numpad numbers 0-9.
-            Case 48, 96 ' Numbers 0 and Numpad 0.
-            If Len(txt_N3c.Text) > 0 Then ' Allow input if the textbox is not empty.
-                ' Do nothing, allow input.
-            Else
-                KeyAscii = 0 ' Disallow input if the textbox is empty.
-            End If
-            Case Else
-                KeyAscii = 0 ' Disallow other characters.
-        End Select
-    End Sub
+        ' TimeTotal
+        Private Sub txt_TimeTotal_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered)
+            InputIntegers KeyAscii, txt_TimeTotal.Text
+        End Sub
     
-    Private Sub txt_TimeFOV_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered)
-        Select Case KeyAscii
-            Case 8 ' Backspace.
-            Case 49 To 57, 97 To 105 ' Numbers 1-9 and Numpad numbers 0-9.
-            Case 48, 96 ' Numbers 0 and Numpad 0.
-            If Len(txt_TimeFOV.Text) > 0 Then ' Allow input if the textbox is not empty.
-                ' Do nothing, allow input.
-            Else
-                KeyAscii = 0 ' Disallow input if the textbox is empty.
-            End If
-            Case Else
-                KeyAscii = 0 ' Disallow other characters.
-        End Select
-    End Sub
-    
-    Private Sub txt_TimeTotal_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger) ' Allow numbers (0-9) and Backspace key (if not already entered)
-        Select Case KeyAscii
-            Case 8
-            Case 49 To 57, 97 To 105 ' Numbers 1-9 and Numpad numbers 0-9.
-            Case 48, 96 ' Numbers 0 and Numpad 0.
-            If Len(txt_TimeTotal.Text) > 0 Then ' Allow input if the textbox is not empty.
-                ' Do nothing, allow input
-            Else
-                
-                KeyAscii = 0 ' Disallow input if the textbox is empty.
-            End If
-            Case Else
-                KeyAscii = 0 ' Disallow other characters.
-        End Select
-    End Sub
-    
-    ' Avoid pasting words and numbers.
-    
-    Private Sub txt_X_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
-    End Sub
+    ' Avoid copy and pasting (ctrl+v) in text boxes.
+        ' X
+        Private Sub txt_X_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+            AvoidCopyPaste KeyCode, Shift
+        End Sub
       
-    Private Sub txt_N_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
-    End Sub
+        ' N
+        Private Sub txt_N_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+            AvoidCopyPaste KeyCode, Shift
+        End Sub
     
-    Private Sub txt_N3c_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
-    End Sub
+        ' N3C
+        Private Sub txt_N3c_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+            AvoidCopyPaste KeyCode, Shift
+        End Sub
     
-    Private Sub txt_TimeFOV_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
-    End Sub
+        ' TimeFOV
+        Private Sub txt_TimeFOV_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+            AvoidCopyPaste KeyCode, Shift
+        End Sub
     
-    Private Sub txt_TimeTotal_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
-    End Sub
+        ' TimeTotal
+        Private Sub txt_TimeTotal_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+            AvoidCopyPaste KeyCode, Shift
+        End Sub
 
 '
 ' Calculations
@@ -170,26 +114,31 @@ End Sub
         
         If Not IsNumeric(txt_X.Value) Then
             MsgBox "Please enter the number of targets counted [x].", vbExclamation, "Input Required"
+            txt_X.SetFocus
             Exit Sub
         End If
         
         If Not IsNumeric(txt_N.Value) Then
             MsgBox "Please enter the number of markers counted [n].", vbExclamation, "Input Required"
-            Exit Sub
-        End If
-        
-        If Not IsNumeric(txt_TimeFOV.Value) Then
-            MsgBox "Please enter the average time (seconds) it takes to change fields of view.", vbExclamation, "Input Required"
+            txt_N.SetFocus
             Exit Sub
         End If
         
         If Not IsNumeric(txt_N3c.Value) Then
             MsgBox "Please enter the number of observed fields-of-view.", vbExclamation, "Input Required"
+            txt_N3c.SetFocus
+            Exit Sub
+        End If
+        
+        If Not IsNumeric(txt_TimeFOV.Value) Then
+            MsgBox "Please enter the average time (seconds) it takes to change fields of view.", vbExclamation, "Input Required"
+            txt_TimeFOV.SetFocus
             Exit Sub
         End If
         
         If Not IsNumeric(txt_TimeTotal.Value) Then
             MsgBox "Please enter the total time (seconds) that counting took.", vbExclamation, "Input Required"
+            txt_TimeTotal.SetFocus
             Exit Sub
         End If
         
@@ -375,12 +324,13 @@ End Sub
         response = MsgBox("Are you sure you want to clear the inputs?", vbQuestion + vbYesNo + vbDefaultButton2, "Clear Inputs")
         
         ' Check response.
-        If response = vbYes Then 'C lear inputs.
+        If response = vbYes Then 'Clear inputs.
             txt_X.Text = ""
             txt_N.Text = ""
             txt_TimeFOV.Text = ""
             txt_N3c.Text = ""
             txt_TimeTotal.Text = ""
+            CommandButtonClearTimer_Click ' Make sure timer is clear.
         Else
             ' Do nothing.
         End If
@@ -485,12 +435,12 @@ End Sub
             StartTime = Timer ' Get the current time
     
             CommandButtonTimer.Caption = "Pause timer" 'Change text to this while timer is running.
-            CommandButtonClearTimer.Visible = True 'Make reset button visible.
+            CommandButtonClearTimer.Enabled = True
             
             Do While TimerRunning
                 txt_TimeTotal.Locked = True ' Disable the textbox from being edited.
                 ElapsedSeconds = Timer - StartTime + PausedTime ' Calculate elapsed time in seconds.
-                txt_TimeTotal.Text = Format(ElapsedSeconds, "0") ' Display elapsed time in text box.
+                txt_TimeTotal.Text = Format(ElapsedSeconds, "0.0") ' Display elapsed time in text box.
                 DoEvents ' Allow other events to be processed.
             Loop
         Else
@@ -503,13 +453,25 @@ End Sub
     'Reset timer.
     
     Private Sub CommandButtonClearTimer_Click()
+    
+        If IsNumeric(txt_TimeTotal) Then 'Check if time value is not empty.
+            response = MsgBox("This will reset the timer. Do you want to continue?", vbQuestion + vbYesNo + vbDefaultButton2, "Reset timer?")
+    
+            ' Check response.
+            If response = vbNo Then 'Clear inputs.
+                Exit Sub
+            Else
+                ' Do nothing.
+            End If
+        End If
+
         ' Clear the results by updating the captions of labels or values of text boxes.
         txt_TimeTotal.Locked = False
         ElapsedSeconds = 0
         PausedTime = 0
-        txt_TimeTotal.Text = "" ' Update the textbox to display nothing.
+        txt_TimeTotal.Text = "0.0" ' Update the textbox to display zero.
         CommandButtonTimer.Caption = "Start timer" ' Reset the caption of the timer button.
-        CommandButtonClearTimer.Visible = False 'Make reset button invisible.
+        CommandButtonClearTimer.Enabled = False
         
         ' If the timer was running, stop it.
         If TimerRunning Then

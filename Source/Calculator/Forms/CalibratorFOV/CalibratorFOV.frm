@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalibratorFOV 
    Caption         =   "FOVS method calibration counts"
-   ClientHeight    =   3255
+   ClientHeight    =   1815
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   6495
+   ClientWidth     =   6015
    OleObjectBlob   =   "CalibratorFOV.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -142,18 +142,23 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
         
         CalculatorFOVSTarget.txt_N_FOVS.Enabled = True
         CalculatorFOVSTarget.txt_N_FOVS.BackColor = RGB(255, 255, 255)
-        CalculatorFOVSTarget.txt_N3f.Enabled = True
-        CalculatorFOVSTarget.txt_N3f.BackColor = RGB(255, 255, 255)
+        CalculatorFOVSTarget.txt_N3E.Enabled = True
+        CalculatorFOVSTarget.txt_N3E.BackColor = RGB(255, 255, 255)
         
         ' Refresh certain outputs.
-        uhat = X / N
+        
+        If N <> 0 Then
+            uhat = X / N
+        Else
+            ' Do nothing.
+        End If
         Y3x = X / N3C
         
         If FOVTransitionEffort <> 0 Then
             Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (FOVTransitionEffort / uhat)))) / ((Y3x * (Sqr(Y3x + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-            Nstar3F = (uhat / (((LevelError / 100) * (LevelError / 100)) - ((N1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (uhat * FOVTransitionEffort)))) / (Y3x * (Sqr(Y3x + (uhat * FOVTransitionEffort))))
+            Nstar3E = (uhat / (((LevelError / 100) * (LevelError / 100)) - ((N1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (uhat * FOVTransitionEffort)))) / (Y3x * (Sqr(Y3x + (uhat * FOVTransitionEffort))))
             deltastar = uhat * Sqr((FOVTransitionEffort + Y3x) / ((FOVTransitionEffort * uhat) + Y3x))
-            eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3F) + N
+            eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3E) + N
             eF_sigmabar = ((2 * Y3x) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr((Y3x + FOVTransitionEffort) * (Y3x + (uhat * FOVTransitionEffort)))))) / (Y3x * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
         Else
             ' FOVTransitionEffort is equal to 0, do not run calculation
@@ -163,7 +168,7 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
         
         CalculatorFOVSTarget.LabelResult_OptimalCalibrationFOV.Value = Format(Y3x, "0.00")
         CalculatorFOVSTarget.LabelResult_OptimalCalibrationFOV.Value = Format(Nstar3C, "0.00")
-        CalculatorFOVSTarget.LabelResult_OptimalFullFOV.Value = Format(Nstar3F, "0.00")
+        CalculatorFOVSTarget.LabelResult_OptimalFullFOV.Value = Format(Nstar3E, "0.00")
         CalculatorFOVSTarget.LabelResult_OptimalRatioFOV.Value = Format(deltastar, "0.00")
         CalculatorFOVSTarget.LabelResult_CollectionEffort_FOVS.Value = Format(eF, "0")
         CalculatorFOVSTarget.LabelResult_PredictedCollectionEffort_FOVS.Value = Format(eF_sigmabar, "0")
@@ -174,8 +179,8 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
         
         CalculatorFOVSMarker.txt_X_FOVS.Enabled = True
         CalculatorFOVSMarker.txt_X_FOVS.BackColor = RGB(255, 255, 255)
-        CalculatorFOVSMarker.txt_N3f.Enabled = True
-        CalculatorFOVSMarker.txt_N3f.BackColor = RGB(255, 255, 255)
+        CalculatorFOVSMarker.txt_N3E.Enabled = True
+        CalculatorFOVSMarker.txt_N3E.BackColor = RGB(255, 255, 255)
         
         ' Refresh certain outputs.
         uhat = X / N
@@ -183,9 +188,9 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
                 
         If FOVTransitionEffort <> 0 Then
             Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + (Sqr(Y3n + (FOVTransitionEffort / uhat)))) / ((Y3n * (Sqr(Y3n + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-            Nstar3F = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
+            Nstar3E = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
             deltastar = uhat * Sqr((FOVTransitionEffort + (Y3n * uhat)) / ((FOVTransitionEffort * uhat) + (Y3n * uhat)))
-            eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3F) + N
+            eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3E) + N
             eF_sigmabar = ((2 * (Y3n * uhat)) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr(((Y3n * uhat) + FOVTransitionEffort) * ((Y3n * uhat) + (uhat * FOVTransitionEffort)))))) / ((Y3n * uhat) * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
         Else
             ' FOVTransitionEffort is equal to 0, do not run calculation
@@ -195,7 +200,7 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
         
         CalculatorFOVSMarker.LabelResult_OptimalCalibrationFOV.Value = Format(Y3n, "0.00")
         CalculatorFOVSMarker.LabelResult_OptimalCalibrationFOV.Value = Format(Nstar3C, "0.00")
-        CalculatorFOVSMarker.LabelResult_OptimalFullFOV.Value = Format(Nstar3F, "0.00")
+        CalculatorFOVSMarker.LabelResult_OptimalFullFOV.Value = Format(Nstar3E, "0.00")
         CalculatorFOVSMarker.LabelResult_OptimalRatioFOV.Value = Format(deltastar, "0.00")
         CalculatorFOVSMarker.LabelResult_CollectionEffort_FOVS.Value = Format(eF, "0")
         CalculatorFOVSMarker.LabelResult_PredictedCollectionEffort_FOVS.Value = Format(eF_sigmabar, "0")
@@ -233,8 +238,10 @@ End Sub
 ' Populate inputs with previous values if these exist. Sets the value of the textbox to the value of the public variable.
 Private Sub UserForm_Initialize()
     If FOVSTargetChosen Then
-        Label_X_FOVS.Caption = "Number of counted target specimens" & vbCrLf & "during calibration counts [x]"
-        Label_S3.Caption = "Standard deviation of target specimens per" & vbCrLf & "field of view (from calibration counts) [s ]"
+        Label_X_FOVS.ControlTipText = "Number of counted target specimens during calibration counts."
+        Label_X_FOVS.Caption = "[x]"
+        Label_S3.ControlTipText = "Standard deviation of target specimens per field of view (from calibration counts)."
+        Label_Subscript3.ControlTipText = "Standard deviation of target specimens per field of view (from calibration counts)."
         
         txt_X_FOVS.Enabled = True
         txt_X_FOVS.BackColor = RGB(255, 255, 255) ' White colour.
@@ -245,8 +252,10 @@ Private Sub UserForm_Initialize()
             txt_X_FOVS.Text = ""
         End If
     ElseIf FOVSMarkerChosen Then
-        Label_X_FOVS.Caption = "Number of counted marker specimens" & vbCrLf & "during calibration counts [n]"
-        Label_S3.Caption = "Standard deviation of marker specimens per" & vbCrLf & "field of view (from calibration counts) [s ]"
+        Label_X_FOVS.ControlTipText = "Number of counted marker specimens during calibration counts."
+        Label_X_FOVS.Caption = "[n]"
+        Label_S3.ControlTipText = "Standard deviation of marker specimens per field of view (from calibration counts)."
+        Label_Subscript3.ControlTipText = "Standard deviation of marker specimens per field of view (from calibration counts)."
         
         txt_X_FOVS.Enabled = True
         txt_X_FOVS.BackColor = RGB(255, 255, 255) ' White colour.

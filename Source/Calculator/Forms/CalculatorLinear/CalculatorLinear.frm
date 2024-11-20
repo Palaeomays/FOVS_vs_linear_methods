@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorLinear 
-   Caption         =   "Absolute abundance calculator v1.0 - Linear method"
-   ClientHeight    =   7815
+   Caption         =   "Absolute abundance calculator v1.1.0 - Linear method"
+   ClientHeight    =   5415
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   11520
+   ClientWidth     =   11895
    OleObjectBlob   =   "CalculatorLinear.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -152,6 +152,7 @@ Private Sub CommandButton_MethodDetermination_Click()
     CalculatorStart.Show
     Me.Hide
 End Sub
+
 
 Private Sub UserForm_Initialize() ' Runs as soon as userform is opened
 

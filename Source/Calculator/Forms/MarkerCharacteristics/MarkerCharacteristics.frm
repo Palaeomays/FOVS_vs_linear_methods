@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} MarkerCharacteristics 
    Caption         =   "Marker and sample characteristics"
-   ClientHeight    =   5400
+   ClientHeight    =   3135
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   5670
+   ClientWidth     =   4215
    OleObjectBlob   =   "MarkerCharacteristics.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -28,7 +28,8 @@ Attribute VB_Exposed = False
     Dim InputEmptyUnits As Boolean
     Dim InputEmptyS2 As Boolean
     Private UnsavedWarningGiven As Boolean
-    
+
+
 '
 ' Startup
 '

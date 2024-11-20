@@ -12,15 +12,15 @@ Attribute VB_Name = "ShowCalculator"
         Public N As Long ' Number of markers.
     
     ' Time
-        Public NumFOV As Long ' Number of counted fields-of-view. Here defined independently, will later help define N3C (calibration count fields-of-views) or N3F (full count fields-of-view).
-        Public TimeTotal As Long ' Seconds since calibration count start meant to help determine effort calculations. Not used for full counts.
+        Public NumFOV As Long ' Number of counted fields-of-view. Here defined independently, will later help define N3C (calibration count fields-of-views) or N3E (extrapolated counts fields-of-view).
+        Public TimeTotal As Long ' Seconds since calibration count start meant to help determine effort calculations. Not used for extrapolation counts.
         Public TimeFOV As Long ' Seconds it takes to transition between fields-of-view. Used to later be substracted with TimeTotal in order to see the actual time it takes to count specimens.
     
     ' Timer related.
     
-        Public StartTime As Long 'Stores OS system time by calling the 'Timer' function.
-        Public ElapsedSeconds As Long 'Elapsed time in seconds.
-        Public PausedTime As Long 'Stores how many seconds a timer was a paused.
+        Public StartTime As Double 'Stores OS system time by calling the 'Timer' function.
+        Public ElapsedSeconds As Double 'Elapsed time in seconds.
+        Public PausedTime As Double 'Stores how many seconds a timer was a paused.
         Public TimerRunning As Boolean 'Flag to check if timer subroutine is running or not.
     
     ' Effort and Calibrations
@@ -37,16 +37,16 @@ Attribute VB_Name = "ShowCalculator"
         Public Y3x As Double ' Mean value of targets per field-of-view.
         Public Y3n As Double ' Mean value of markers per field-of-view.
         Public N3C As Double ' Calibration count fields-of-view seen.
-        Public N3F As Double ' Full count fields-of-view seen.
+        Public N3E As Double ' Extrapolated counts fields-of-view seen.
         Public uhat As Double ' Target-to-marker ratio.
-        Public xhat As Double ' Extrapolated number of counted target specimens for the full counts
-        Public nhat As Double ' Extrapolated number of counted target specimens for the full counts
-        Public eL As Double ' Data collection effort for linear method
-        Public eL_sigmabar As Double ' Pedicted data collection effort for linear method
-        Public eF As Double ' Data collection effort for FOVS method
-        Public eF_sigmabar As Double ' Pedicted data collection effort for FOVS method
+        Public xhat As Double ' Extrapolated number of counted target specimens for the extrapolation counts.
+        Public nhat As Double ' Extrapolated number of counted target specimens for the extrapolation counts.
+        Public eL As Double ' Data collection effort for linear method.
+        Public eL_sigmabar As Double ' Pedicted data collection effort for linear method.
+        Public eF As Double ' Data collection effort for FOVS method.
+        Public eF_sigmabar As Double ' Pedicted data collection effort for FOVS method.
         Public Nstar3C As Double ' Optimal number of calibration count fields-of-view.
-        Public Nstar3F As Double ' Optimal number of full count fields-of-view.
+        Public Nstar3E As Double ' Optimal number of extrapolation count fields-of-view.
         Public deltastar As Double ' Optimal field-of-view count ratio.
     
     ' Marker characteristics
