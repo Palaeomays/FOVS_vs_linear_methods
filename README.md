@@ -30,11 +30,21 @@ This ReadMe file was generated on 2024-11-20 by Marcos Amores
 
 ## Troubleshooting
 
-### 1. Microsoft has blocked macros from running because the source of this file is untrusted.
+### If you see the warning message: "Microsoft has blocked macros from running because the source of this file is untrusted."
 
-  Please see the official guide on how to resolve this at the Microsoft Support website, link below.
+  You can unblock macros by modifying the properties of the file as follows:
+
+    1) Open Windows File Explorer and go to the folder where you saved the file.
+
+    2) Right-click the file and choose Properties from the context menu.
+
+    3) At the bottom of the General tab, select the Unblock checkbox and select OK.
+    
+  For additional details, please see the official guide on how to resolve this at the Microsoft Support website, link below:
   
   https://support.microsoft.com/en-us/topic/a-potentially-dangerous-macro-has-been-blocked-0952faa0-37e7-4316-b61d-5b5ed6024216
+
+
 
 
 
