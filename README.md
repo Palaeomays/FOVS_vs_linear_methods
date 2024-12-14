@@ -48,7 +48,7 @@ This ReadMe file was generated on 2024-11-20 by Marcos Amores
 
 
 
-# Matlab code for simulations Quick Start Guide
+# Matlab code for simulations --- Quick Start Guide
 
 Get Matlab ready:
 * Download the Matlab files to your working directory.
@@ -58,13 +58,19 @@ Get Matlab ready:
 
 To generate the data for:
 * Tables S5--S15 and Fig S17 use the file BigFossilSimsV3.m, by typing
-      >> BigFossilSimsV3 
-   on the Matlab command line and hit Enter.
+```
+	>> BigFossilSimsV3
+```
+  on the Matlab command line and hit Enter.
 * Fig 3 use the file SimStatsChecker.m by typing
-	   >> SimStatsChecker(30000,1000,700,15,100000,1)
+```
+	>> SimStatsChecker(30000,1000,700,15,100000,1)
+```
    on the Matlab command line and hit Enter.
 * Fig 8 use the file PrecWRTWorkV3.m by typing
-   >> PrecWRTWorkV3
+```
+	>> PrecWRTWorkV3
+```
    on the Matlab command line and hit Enter.
 
 Note that some of these files will take many hours (even days) to run. If you wish to run shorter versions, change the "its" parameter to a smaller number. You can generate new simulations with different parameters using the more detailed instructions contained in "Supporting information file 2".
