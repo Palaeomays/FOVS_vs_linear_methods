@@ -67,7 +67,7 @@ To generate the data for:
 	>> SimStatsChecker(30000,1000,700,15,100000,1)
 ```
    on the Matlab command line and hit Enter.
-* Fig 8 use the file PrecWRTWorkV3.m by typing
+* Fig 6 use the file PrecWRTWorkV3.m by typing
 ```
 	>> PrecWRTWorkV3
 ```
