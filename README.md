@@ -57,17 +57,17 @@ Get Matlab ready:
    + If you run the code without this Toolbox installed, then you will receive an error. There should be a link in the error message that will install the Toolbox for you (depending on your Matlab distribution and licence).
 
 To generate the data for:
-* Tables S4--S14 and Fig S1 use the file BigFossilSimsV3.m, by typing
+* For Tables S4--S14 and Fig S1, use the file BigFossilSimsV3.m by typing
 ```
 	>> BigFossilSimsV3
 ```
   on the Matlab command line and hit Enter.
-* Fig 3 use the file SimStatsChecker.m by typing
+* For Fig 3, use the file SimStatsChecker.m by typing
 ```
 	>> SimStatsChecker(30000,1000,700,15,100000,1)
 ```
    on the Matlab command line and hit Enter.
-* Fig 6 use the file PrecWRTWorkV3.m by typing
+* For Fig 6, use the file PrecWRTWorkV3.m by typing
 ```
 	>> PrecWRTWorkV3
 ```
