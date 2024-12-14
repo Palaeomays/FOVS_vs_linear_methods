@@ -15,7 +15,7 @@ This ReadMe file was generated on 2024-11-20 by Marcos Amores
   
   Address: Burgring 7, 1010 Vienna, Austria
   
-  Email: cmays@ucc.ie
+  Email: chris.mays@nhm.at
 
 ### 3. Date of present version:
    
