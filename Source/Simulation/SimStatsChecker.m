@@ -18,7 +18,7 @@ rightsx=leftsx+aperturewidth;
 topsx=bottomsx+apertureheight;
 fovsx=[leftsx;rightsx;bottomsx;topsx];%fields of view with format [left edge; right edge; bottom edge; top edge]
 
-%building the full count fields of view
+%building the extrapolation count fields of view
 block=floor(fn/50);%First 50 FOVs in left block, then next 50 FOVs in right block
 nonews=mod(fn,50);%Number of FOVs in the new block
 newlefts=zeros(1,nonews);%List of left edges of FOVs in new block
@@ -63,29 +63,29 @@ calmeanx=zeros(its,1); %calibration mean number of x per FOV
 calvarx=zeros(its,1); %calibration variance of mean number of x
 calsdx=zeros(its,1); %calibration st dev of mean number of x
 
-ftotalx=zeros(its,1); %full count of x in all FOVs (explicit counting, as opposed to estimating using mean from calibration)
-fmeanx=zeros(its,1); %mean number of x in full count (explicit mean, as opposed to using mean from calibration)
-fsdx=zeros(its,1); %st dev of mean number of x in full count (explicit st dev, , as opposed to using st dev from calibration
-ftotaln=zeros(its,1); %count of exotics in full count in all FOVs
+ftotalx=zeros(its,1); %extrapolation count of x in all FOVs (explicit counting, as opposed to estimating using mean from calibration)
+fmeanx=zeros(its,1); %mean number of x in extrapolation count (explicit mean, as opposed to using mean from calibration)
+fsdx=zeros(its,1); %st dev of mean number of x in extrapolation count (explicit st dev, , as opposed to using st dev from calibration
+ftotaln=zeros(its,1); %count of exotics in extrapolation count in all FOVs
 fmeann=zeros(its,1); %mean number of exotics per FOV
 fsdn=zeros(its,1); %st dev of mean number of exotics per FOV
 
-xhats=zeros(its,1);%Estimated number of total fossils in full count (using calibration count)
+xhats=zeros(its,1);%Estimated number of total fossils in extrapolation count (using calibration count)
 Fconc=zeros(its,1);%Concentration calculation for FOV method (assuming V=1)
 tic;
 %treturn of form [transect x count,std dev of x count;transect n count, std dev of n count]
 %calreturn of form [counted x in all calibration FOVs,mean x in calibration FOVs, std dev of counted x in calibration FOVs]
-%fullreturn of form:
-    %row 1= [counted x in all full FOVs, mean x in full FOVs, std dev of x in full FOVs, estimated total x]
-    %row 2= [counted n in all full FOVs, mean n in full FOVs, std dev of n in full FOVs, concentration]
+%extrapreturn of form:
+    %row 1= [counted x in all extrapolation FOVs, mean x in extrapolation FOVs, std dev of x in extrapolation FOVs, estimated total x]
+    %row 2= [counted n in all extrapolation FOVs, mean n in extrapolation FOVs, std dev of n in extrapolation FOVs, concentration]
 fnnobins=20;
 fnhist=zeros(1,fnnobins);
 
 for i=1:its
     if i==its
-        [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tlim,fovsx,fovsn,1,fnnobins);
+        [treturn,calreturn,extrapreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tlim,fovsx,fovsn,1,fnnobins);
     else
-        [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tlim,fovsx,fovsn,0,fnnobins);
+        [treturn,calreturn,extrapreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tlim,fovsx,fovsn,0,fnnobins);
     end
     fnhist=fnhist+newfnhist;
     
@@ -100,15 +100,15 @@ for i=1:its
     calvarx(i)=calreturn(3);
     calsdx(i)=calreturn(4); %calibration st dev of mean number of x (proportional, corrected with c4)
 
-    ftotalx(i)=fullreturn(1,1); %full count of x in all FOVs (explicit counting, as opposed to estimating using mean from calibration)
-    fmeanx(i)=fullreturn(1,2); %mean number of x in full count (explicit mean, as opposed to using mean from calibration)
-    fsdx(i)=fullreturn(1,3); %st dev of mean number of x in full count (explicit st dev, as opposed to using st dev from calibration
-    ftotaln(i)=fullreturn(2,1); %count of exotics in full count in all FOVs
-    fmeann(i)=fullreturn(2,2); %mean number of exotics per FOV
-    fsdn(i)=fullreturn(2,3); %st dev of mean number of exotics in full count
+    ftotalx(i)=extrapreturn(1,1); %extrapolation count of x in all FOVs (explicit counting, as opposed to estimating using mean from calibration)
+    fmeanx(i)=extrapreturn(1,2); %mean number of x in extrapolation count (explicit mean, as opposed to using mean from calibration)
+    fsdx(i)=extrapreturn(1,3); %st dev of mean number of x in extrapolation count (explicit st dev, as opposed to using st dev from calibration
+    ftotaln(i)=extrapreturn(2,1); %count of exotics in extrapolation count in all FOVs
+    fmeann(i)=extrapreturn(2,2); %mean number of exotics per FOV
+    fsdn(i)=extrapreturn(2,3); %st dev of mean number of exotics in extrapolation count
     
-    xhats(i)=fullreturn(1,4); %Estimated number of total fossils in full count (using calibration count)
-    Fconc(i)=fullreturn(2,4); %Concentration calculation (assuming V=1)
+    xhats(i)=extrapreturn(1,4); %Estimated number of total fossils in extrapolation count (using calibration count)
+    Fconc(i)=extrapreturn(2,4); %Concentration calculation (assuming V=1)
     %fprintf('time for i = %d is %f secs at %s\n',i,toc,datestr(clock));
     if mod(i,floor(its/noprints))==0
         fprintf('i= %d, at %s\n',i,datestr(clock))
@@ -164,7 +164,7 @@ SEregB2=sum((totalbinoprobs-histftotaln).^2)
 % figure(21)
 % histogram(ftotaln,'Normalization','pdf')
 % xlim([-1,30])
-% title('histogram of marker counts in all full count FOVs, Poisson [red], Binomial [blue]')
+% title('histogram of marker counts in all extrapolation count FOVs, Poisson [red], Binomial [blue]')
 % hold on
 % plot(totalxs,totaly1,'r','LineWidth',5)
 % plot(totalxs,totalbinoprobs,'b')
@@ -173,7 +173,7 @@ SEregB2=sum((totalbinoprobs-histftotaln).^2)
 figure(22)
 bar(totalxs,histftotaln)
 xlim([-0.5,30])
-title('histogram of marker counts in all full count FOVs, Poisson [red], Binomial [blue]')
+title('histogram of marker counts in all extrapolation count FOVs, Poisson [red], Binomial [blue]')
 hold on
 plot(totalxs,totaly1,'r','LineWidth',5)
 plot(totalxs,totalbinoprobs,'b')
@@ -182,7 +182,7 @@ hold off
 figure(23)
 bar(totalxs,histftotaln)
 xlim([-0.5,30])
-title('histogram of marker counts in all full count FOVs, Poisson [red]')
+title('histogram of marker counts in all extrapolation count FOVs, Poisson [red]')
 hold on
 plot(totalxs,totaly1,'r','LineWidth',3)
 hold off
@@ -196,7 +196,7 @@ hold off
 % estMxsqdiff=zeros(its,1);%To be used to calculate variance and then st dev of estimated Mx
 % StockmarrEprop=zeros(its,1);%calculating Stockmarr's proportional error
 % StockmarrEpropfpc=zeros(its,1);%calculating Stockmarr's proportional error, corrected for finite number
-% lineffort=zeros(its,1);%Effort required for collecting linear data, Eqn 4.
+% lineffort=zeros(its,1);%Effort required for collecting linear data, Eqn 6.
 % 
 % meantxfpc=mean((Mx-ttotalx)/Mx)
 % sqrt(meantxfpc)
@@ -226,8 +226,8 @@ hold off
 % %FOV method calculations
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
-% FOVerror=zeros(its,1);%standard error of full count method (Eqn 3), using variance
-% FOVeffort=zeros(its,1);%Effort required for collecting FOV data, Eqn 5.
+% FOVerror=zeros(its,1);%standard error of extrapolation count method (Eqn 5), using variance
+% FOVeffort=zeros(its,1);%Effort required for collecting FOV data, Eqn 7.
 % FOVerrorNorm=zeros(its,1);
 % FOVeffort2=zeros(its,1);
 % FOVerrorNorm2=zeros(its,1);
@@ -241,10 +241,10 @@ hold off
 % for i=1:its
 %     fxfpc=(Mx-caltotalx(i))/Mx;
 %     fnfpc=(Mn-ftotaln(i))/Mn;
-%     FOVerrorNorm(i)=sqrt( (calsdx(i)/sqrt(fcal))^2 + (fsdn(i)/sqrt(fn))^2 );%Eqn 3
-%     FOVerror(i)=sqrt( (calsdx(i)/sqrt(fcal))^2 + (sqrt(ftotaln(i))/ftotaln(i))^2 );%Eqn 3
-%     FOVerrorNorm2(i)=sqrt( ((calsdx(i)/sqrt(fcal))^2)*fxfpc + ((fsdn(i)/sqrt(fn))^2)*fxfpc );%Eqn 3 with fpc
-%     FOVerror2(i)=sqrt( ((calsdx(i)/sqrt(fcal))^2)*fxfpc + ((sqrt(ftotaln(i))/ftotaln(i))^2)*fxfpc );%Eqn 3 with fpc
+%     FOVerrorNorm(i)=sqrt( (calsdx(i)/sqrt(fcal))^2 + (fsdn(i)/sqrt(fn))^2 );%Eqn 5
+%     FOVerror(i)=sqrt( (calsdx(i)/sqrt(fcal))^2 + (sqrt(ftotaln(i))/ftotaln(i))^2 );%Eqn 5
+%     FOVerrorNorm2(i)=sqrt( ((calsdx(i)/sqrt(fcal))^2)*fxfpc + ((fsdn(i)/sqrt(fn))^2)*fxfpc );%Eqn 5 with fpc
+%     FOVerror2(i)=sqrt( ((calsdx(i)/sqrt(fcal))^2)*fxfpc + ((sqrt(ftotaln(i))/ftotaln(i))^2)*fxfpc );%Eqn 5 with fpc
 %     FOVeffort(i)=2*fcal+caltotalx(i)+2*fn+ftotaln(i);
 % end
 

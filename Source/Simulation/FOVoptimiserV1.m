@@ -1,4 +1,4 @@
-function [N3star,fstar,FOVratio,FOVxdensity]=FOVoptimiserV1(Mx,Mn,alpha,t,errormin,workmax)
+function [N3star,fstar,FOVratio,FOVxdensity]=FOVoptimiserV1(Mx,Mn,omega,t,errormin,effortmax)
 format compact;
 format long;
 
@@ -6,23 +6,23 @@ aperturewidth=3;
 apertureheight=3;
 FOVarea=aperturewidth*apertureheight;
 
-FOVxdensity=Mx*FOVarea/(100*100); %Y3bar
+FOVxdensity=Mx*FOVarea/(100*100); %\bar{Y}_{3x}
 rho=Mx/Mn;
-FOVratio=rho*sqrt((alpha+FOVxdensity)/(alpha*rho+FOVxdensity));
+FOVratio=rho*sqrt((omega+FOVxdensity)/(omega*rho+FOVxdensity));
 
-sqrt1=sqrt(FOVxdensity+alpha);
-sqrt2=sqrt(FOVxdensity+rho*alpha);
+sqrt1=sqrt(FOVxdensity+omega);
+sqrt2=sqrt(FOVxdensity+rho*omega);
 errorshift=(errormin/100)^2-t;
 
-if (workmax<0)&&(errormin>0)
+if (effortmax<0)&&(errormin>0)
     %fprintf(2,'Aiming for error = %f%%\n',errormin)
     N3star=(sqrt1+sqrt2)/(FOVxdensity*sqrt1*errorshift);
     fstar=N3star*FOVratio;
 end
 
-if (workmax>0)&&(errormin<0)
-    %fprintf(2,'Aiming for work = %f units\n',workmax)
-    N3star=workmax/(alpha+FOVxdensity+sqrt1*sqrt2);
+if (effortmax>0)&&(errormin<0)
+    %fprintf(2,'Aiming for effort = %f units\n',effortmax)
+    N3star=effortmax/(omega+FOVxdensity+sqrt1*sqrt2);
     fstar=N3star*FOVratio;
 end
 

@@ -1,4 +1,4 @@
-function [treturn,calreturn,fullreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,fovsx,fovsn,printflag)
+function [treturn,calreturn,extrapreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,fovsx,fovsn,printflag)
 
     dim=100;
     fossils=rand(Mx,2)*dim;
@@ -66,7 +66,7 @@ function [treturn,calreturn,fullreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,fovsx,fovs
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %Fields of view (fovs) for calibration counts (x)
-    fx=size(fovsx,2);%Number of calibration FOVs, N_3 in Eqn 3.
+    fx=size(fovsx,2);%Number of calibration FOVs, N_{3C} in Eqn 5.
     fxcounts=zeros(1,fx);
     aperturewidthx=fovsx(2,1)-fovsx(1,1);
     apertureheightx=fovsx(4,1)-fovsx(3,1);
@@ -92,16 +92,16 @@ function [treturn,calreturn,fullreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,fovsx,fovs
     fmeanx=mean(fxcounts);%Mean number of fossils per FOV in calibration
     fvarx=var(fxcounts)/(fmeanx^2);%Proportional sample variance of mean number of fossils per FOV in calibration
     calc4=sqrt(2/(fx-1))*gamma(fx/2)/gamma((fx-1)/2);%Sampling st dev correction factor for calibration counts
-    fovsdx=(std(fxcounts)/fmeanx)/calc4;%Proportional sample standard deviation, corrected with c4, SP3 in Eqn 3.
+    fovsdx=(std(fxcounts)/fmeanx)/calc4;%Proportional sample standard deviation, corrected with c4, S_{3P} in Eqn 5.
     
     %calreturn of form [counted x in all calibration FOVs,mean x in calibration FOVs, std dev of counted x in calibration FOVs]
     calreturn=[fnumberx,fmeanx,fvarx,fovsdx];
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % FOVs method --- Step 4, full counts
+    % FOVs method --- Step 4, extrapolation counts
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %Fields of view (fovs) for full counts (n)
+    %Fields of view (fovs) for extrapolation counts (n)
     fn=size(fovsn,2);
     fncounts=zeros(1,fn);
     truefxcounts=zeros(1,fn);
@@ -131,9 +131,9 @@ function [treturn,calreturn,fullreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,fovsx,fovs
         fncounts(i)=size(fcountedn,1);
     end
     
-    fovc4=sqrt(2/(fn-1))*gamma(fn/2)/gamma((fn-1)/2);%Sampling st dev correction factor for full counts
+    fovc4=sqrt(2/(fn-1))*gamma(fn/2)/gamma((fn-1)/2);%Sampling st dev correction factor for extrapolation counts
     
-    fnumbertruex=sum(truefxcounts); %Actual number of total x in full count FOVs
+    fnumbertruex=sum(truefxcounts); %Actual number of total x in extrapolation count FOVs
     fmeantruex=mean(truefxcounts); 
     fovsdtruex=(std(truefxcounts)/fmeantruex)/fovc4;
     fnumbern=sum(fncounts);
@@ -143,13 +143,13 @@ function [treturn,calreturn,fullreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,fovsx,fovs
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % FOVs method --- Step 5, concentration and error
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    xhat=fmeanx*fn; %Estimated number of total x in full count FOVs
+    xhat=fmeanx*fn; %Estimated number of total x in extrapolation count FOVs
     concentration= xhat*Mn/fnumbern; %Estimated total number of x in slade (FOV method)
     
-    %fullreturn of form:
-    %row 1= [counted x in all full FOVs, mean x in full FOVs, std dev of x in full FOVs, estimated total x]
-    %row 2= [counted n in all full FOVs, mean n in full FOVs, std dev of n in full FOVs, concentration]
-    fullreturn=[fnumbertruex,fmeantruex,fovsdtruex,xhat;fnumbern,fmeann,fovsdn,concentration];
+    %extrapreturn of form:
+    %row 1= [counted x in all extrapolation FOVs, mean x in extrapolation FOVs, std dev of x in extrapolation FOVs, estimated total x]
+    %row 2= [counted n in all extrapolation FOVs, mean n in extrapolation FOVs, std dev of n in extrapolation FOVs, concentration]
+    extrapreturn=[fnumbertruex,fmeantruex,fovsdtruex,xhat;fnumbern,fmeann,fovsdn,concentration];
     
     %print the fossils and exotics with the transect and the fovs
     if printflag==1

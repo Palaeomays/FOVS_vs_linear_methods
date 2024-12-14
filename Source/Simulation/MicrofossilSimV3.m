@@ -29,7 +29,7 @@ for i=1:noHFOVs
 end
 
 calFOVs=allFOVs(:,1:fx);
-fullFOVs=allFOVs(:,(fx+1):fn+fx);
+extrapFOVs=allFOVs(:,(fx+1):fn+fx);
 
 
 ttotalx=zeros(its,1); %total x in transect (linear)
@@ -44,26 +44,26 @@ calmeanx=zeros(its,1); %calibration mean number of x per FOV
 calvarx=zeros(its,1); %calibration variance of mean number of x
 calsdx=zeros(its,1); %calibration st dev of mean number of x
 
-ftotalx=zeros(its,1); %full count of x in all FOVs (explicit counting, as opposed to estimating using mean from calibration)
-fmeanx=zeros(its,1); %mean number of x in full count (explicit mean, as opposed to using mean from calibration)
-fsdx=zeros(its,1); %st dev of mean number of x in full count (explicit st dev, , as opposed to using st dev from calibration
-ftotaln=zeros(its,1); %count of exotics in full count in all FOVs
+ftotalx=zeros(its,1); %extrapolation count of x in all FOVs (explicit counting, as opposed to estimating using mean from calibration)
+fmeanx=zeros(its,1); %mean number of x in extrapolation count (explicit mean, as opposed to using mean from calibration)
+fsdx=zeros(its,1); %st dev of mean number of x in extrapolation count (explicit st dev, , as opposed to using st dev from calibration
+ftotaln=zeros(its,1); %count of exotics in extrapolation count in all FOVs
 fmeann=zeros(its,1); %mean number of exotics per FOV
 fsdn=zeros(its,1); %st dev of mean number of exotics per FOV
 
-xhats=zeros(its,1);%Estimated number of total fossils in full count (using calibration count)
+xhats=zeros(its,1);%Estimated number of total fossils in extrapolation count (using calibration count)
 Fconc=zeros(its,1);%Concentration calculation for FOV method (assuming V=1)
 tic;
 %treturn of form [transect x count,std dev of x count,right edge of transect;transect n count, std dev of n count,number of counted n as proportion of total number on slide]
 %calreturn of form [counted x in all calibration FOVs,mean x in calibration FOVs, std dev of counted x in calibration FOVs]
-%fullreturn of form:
-    %row 1= [counted x in all full FOVs, mean x in full FOVs, std dev of x in full FOVs, estimated total x]
-    %row 2= [counted n in all full FOVs, mean n in full FOVs, std dev of n in full FOVs, concentration]
+%extrapreturn of form:
+    %row 1= [counted x in all extrapolation FOVs, mean x in extrapolation FOVs, std dev of x in extrapolation FOVs, estimated total x]
+    %row 2= [counted n in all extrapolation FOVs, mean n in extrapolation FOVs, std dev of n in extrapolation FOVs, concentration]
 for i=1:its
     if i==its
-        [treturn,calreturn,fullreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,calFOVs,fullFOVs,1);
+        [treturn,calreturn,extrapreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,calFOVs,extrapFOVs,1);
     else
-        [treturn,calreturn,fullreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,calFOVs,fullFOVs,0);
+        [treturn,calreturn,extrapreturn]=MicrofossilSim_iV3(Mx,Mn,tlim,calFOVs,extrapFOVs,0);
     end
     
     transrights(i)=treturn(1,3); %Right edge of transect
@@ -78,15 +78,15 @@ for i=1:its
     calvarx(i)=calreturn(3);
     calsdx(i)=calreturn(4); %calibration st dev of mean number of x (proportional, corrected with c4)
 
-    ftotalx(i)=fullreturn(1,1); %full count of x in all FOVs (explicit counting, as opposed to estimating using mean from calibration)
-    fmeanx(i)=fullreturn(1,2); %mean number of x in full count (explicit mean, as opposed to using mean from calibration)
-    fsdx(i)=fullreturn(1,3); %st dev of mean number of x in full count (explicit st dev, as opposed to using st dev from calibration
-    ftotaln(i)=fullreturn(2,1); %count of exotics in full count in all FOVs
-    fmeann(i)=fullreturn(2,2); %mean number of exotics per FOV
-    fsdn(i)=fullreturn(2,3); %st dev of mean number of exotics per FOV
+    ftotalx(i)=extrapreturn(1,1); %total count of x in all extrapolation count FOVs (explicit counting, as opposed to estimating using mean from calibration)
+    fmeanx(i)=extrapreturn(1,2); %mean number of x in extrapolation count FOVs (explicit mean, as opposed to using mean from calibration)
+    fsdx(i)=extrapreturn(1,3); %st dev of mean number of x in extrapolation count FOVs (explicit st dev, as opposed to using st dev from calibration
+    ftotaln(i)=extrapreturn(2,1); %count of exotics in extrapolation count FOVs
+    fmeann(i)=extrapreturn(2,2); %mean number of exotics per FOV
+    fsdn(i)=extrapreturn(2,3); %st dev of mean number of exotics per FOV
     
-    xhats(i)=fullreturn(1,4); %Estimated number of total fossils in full count (using calibration count)
-    Fconc(i)=fullreturn(2,4); %Concentration calculation (assuming V=1)
+    xhats(i)=extrapreturn(1,4); %Estimated number of total fossils in extrapolation count (using calibration count estimate)
+    Fconc(i)=extrapreturn(2,4); %Concentration calculation (assuming V=1)
     %fprintf('time for i = %d is %f secs at %s\n',i,toc,datestr(clock));
     if mod(i,floor(its/noprints))==0
         fprintf('i= %d, at %s\n',i,datestr(clock))
@@ -104,18 +104,18 @@ Lconc=zeros(its,1);
 estimationerror=zeros(its,1);%To be used to check error of linear method
 estMxsqdiff=zeros(its,1);%To be used to calculate variance and then st dev of estimated Mx
 StockmarrE=zeros(its,1);%calculating Stockmarr's proportional error, multiplied by counted x
-StockmarrEprop=zeros(its,1);%calculating Stockmarr's proportional error
+StockmarrEprop=zeros(its,1);%calculating Stockmarr's proportional error (Eqn 2)
 StockmarrEpropfpc=zeros(its,1);%calculating Stockmarr's proportional error, corrected for finite number
-lineffort=zeros(its,1);%Effort required for collecting linear data, Eqn 4.
+lineffort=zeros(its,1);%Effort required for collecting linear data, Eqn 6.
 for i=1:its
     Lestconci=ttotalx(i)*Mn/ttotaln(i);
-    StockmarrEprop(i)=sqrt( t+ (1/ttotalx(i)) + (1/ttotaln(i)) );
+    StockmarrEprop(i)=sqrt( t+ (1/ttotalx(i)) + (1/ttotaln(i)) ); %Eqn 2
     Lconc(i)=Lestconci;
-    Leffort(i)=(2*ttotalx(i)/calmeanx(i))+ttotalx(i)+ttotaln(i);
+    Leffort(i)=(2*ttotalx(i)/calmeanx(i))+ttotalx(i)+ttotaln(i); %Eqn 6
     %Finite size simulation correction
     txfpc=(Mx-ttotalx(i))/Mx;
     tnfpc=(Mn-ttotaln(i))/Mn;
-    StockmarrEpropfpc(i)=sqrt(t+ (1/ttotalx(i))*txfpc + (1/ttotaln(i))*tnfpc );
+    StockmarrEpropfpc(i)=sqrt(t+ (1/ttotalx(i))*txfpc + (1/ttotaln(i))*tnfpc ); 
 end
 if its<=340
     simsc4=sqrt(2/(its-1))*gamma(its/2)/gamma((its-1)/2);%Sampling st dev correction factor
@@ -131,19 +131,19 @@ LsimConcstd=std(Lconc)/(avLconc*simsc4);%Proportional standard deviation of simu
 %FOV method calculations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-FOVerror=zeros(its,1);%standard error of full count method (Eqn 3)
-FOVerror2=zeros(its,1);%standard error of full count method (Eqn 3), but with sample std dev instead of sqrt(n)/n
-FOVerrorfpc=zeros(its,1);%standard error of full count method (Eqn 3)
-FOVeffort=zeros(its,1);%Effort required for collecting FOV data, Eqn 5.
+FOVerror=zeros(its,1);%standard error of FOV method (Eqn 5)
+FOVerror2=zeros(its,1);%standard error of FOV method (Eqn 5), but with sample std dev instead of sqrt(n)/n
+FOVerrorfpc=zeros(its,1);%standard error of FOV method with the finite population correction
+FOVeffort=zeros(its,1);%Effort required for collecting FOV data (Eqn 7).
 
 for i=1:its
-    FOVerror(i)=sqrt(t+ (calsdx(i)/sqrt(fx))^2 + (sqrt(ftotaln(i))/ftotaln(i))^2 );%Eqn 3
-    FOVerror2(i)=sqrt(t+ (calsdx(i)/sqrt(fx))^2 +(fsdn(i)/sqrt(fn))^2 );%Eqn 3, but with sample std dev instead of sqrt(n)/n
-    FOVeffort(i)=(2*fx)+caltotalx(i)+(2*fn)+ftotaln(i);
+    FOVerror(i)=sqrt(t+ (calsdx(i)/sqrt(fx))^2 + (sqrt(ftotaln(i))/ftotaln(i))^2 );%Eqn 5
+    FOVerror2(i)=sqrt(t+ (calsdx(i)/sqrt(fx))^2 +(fsdn(i)/sqrt(fn))^2 );%Eqn 5, but with sample std dev instead of sqrt(n)/n
+    FOVeffort(i)=(2*fx)+caltotalx(i)+(2*fn)+ftotaln(i); %Eqn 7
     %Finite size simulation correction
     fxfpc=(Mx-caltotalx(i))/Mx;
     fnfpc=(Mn-ftotaln(i))/Mn;
-    FOVerrorfpc(i)=sqrt(t+ ((calsdx(i)/sqrt(fx))^2)*fxfpc + ((sqrt(ftotaln(i))/ftotaln(i))^2)*fnfpc);%Eqn 3 with finite population correction
+    FOVerrorfpc(i)=sqrt(t+ ((calsdx(i)/sqrt(fx))^2)*fxfpc + ((sqrt(ftotaln(i))/ftotaln(i))^2)*fnfpc);%Eqn 5 with finite population correction
 end
 FstdTrueConc=sqrt(t+ sum((Fconc-Mx).^2)/((its-1)*Mx^2*simsc4^2));%FOV method st dev from true concentration
 
@@ -170,21 +170,21 @@ if fopt==1
 end
 
 aveffort=(mean(Leffort)+mean(FOVeffort))/2;
-Lworkscale=mean(Leffort)/aveffort
-Fworkscale=mean(FOVeffort)/aveffort
+Leffortscale=mean(Leffort)/aveffort
+Feffortscale=mean(FOVeffort)/aveffort
 
-fprintf(2,'XXXXXXXXXXXXX Data for paper V2 XXXXXXXXXXXXXXXXXX\n')
+fprintf(2,'XXXXXXXXXXXXX Data for paper V3 XXXXXXXXXXXXXXXXXX\n')
 
-fprintf('Lin: est. concentration = %f, sampling effort = %f, scaled (\\tilde{\\sigma}_L, Eqn7) st error (%%) = %f\n',avLconc, mean(Leffort),100*mean(StockmarrEprop)*Lworkscale)
-fprintf('Lin: scaled fpc (\\hat{\\sigma}_L, Eqn11) st error (%%) = %f, prop. st dev from true concentration (%%) = %f\n',100*mean(StockmarrEpropfpc)*Lworkscale,100*LstdTrueConc*Lworkscale)
+fprintf('Lin: est. concentration = %f, sampling effort (Eqn 6) = %f, scaled (\\tilde{\\sigma}_L, Eqn S15) st error (%%) = %f\n',avLconc, mean(Leffort),100*mean(StockmarrEprop)*Leffortscale)
+fprintf('Lin: scaled fpc (\\hat{\\sigma}_L, Eqn S20) st error (%%) = %f, prop. st dev from true concentration (Eqn S18) (%%) = %f\n',100*mean(StockmarrEpropfpc)*Leffortscale,100*LstdTrueConc*Leffortscale)
 fprintf('Lin: %% diff between True error and st error (fpc) = %f\n',100*(LstdTrueConc-mean(StockmarrEpropfpc))/LstdTrueConc)
-fprintf('FOV: est. concentration = %f, sampling effort = %f, scaled (\\tilde{\\sigma}_F, Eqn8) st error (%%) = %f\n',avFconc, mean(FOVeffort),100*mean(FOVerror)*Fworkscale)
-fprintf('FOV: scaled fpc (\\hat{\\sigma}_F, Eqn12) st error (%%) = %f, prop. st dev from true concentration (%%) = %f\n',100*mean(FOVerrorfpc)*Fworkscale,100*FstdTrueConc*Fworkscale)
+fprintf('FOV: est. concentration = %f, sampling effort (Eqn 7) = %f, scaled (\\tilde{\\sigma}_F, Eqn S16) st error (%%) = %f\n',avFconc, mean(FOVeffort),100*mean(FOVerror)*Feffortscale)
+fprintf('FOV: scaled fpc (\\hat{\\sigma}_F, Eqn S21) st error (%%) = %f, prop. st dev from true concentration (Eqn S19) (%%) = %f\n',100*mean(FOVerrorfpc)*Feffortscale,100*FstdTrueConc*Feffortscale)
 fprintf('FOV: %% diff between True error and st error (fpc) = %f\n\n',100*(FstdTrueConc-mean(FOVerrorfpc))/FstdTrueConc)
 
 
-fprintf('XXXXXXXXXXXXX Simulation stats V2 XXXXXXXXXXXXXXXXXX\n')
-fprintf('average work for both methods = %f\n',aveffort)
+fprintf('XXXXXXXXXXXXX Simulation stats V3 XXXXXXXXXXXXXXXXXX\n')
+fprintf('average effort for both methods = %f\n',aveffort)
 fprintf('difference in conc. estimates = %f, %% difference in conc. estimates = %f\n',avLconc-avFconc,100*(avLconc-avFconc)/avFconc)
 fprintf('Lin: %% error of estimate from true conc. = %f\n',(avLconc-Mx)/Mx)
 fprintf('Lin: %% error between infinite and finite (std error) = %f, sim std dev= %f\n',100*(mean(StockmarrEprop)-mean(StockmarrEpropfpc))/mean(StockmarrEpropfpc),100*LsimConcstd)
