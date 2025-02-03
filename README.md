@@ -1,11 +1,11 @@
 # FOVS_vs_linear_methods
-This ReadMe file was generated on 2024-11-20 by Marcos Amores
+This ReadMe file was generated on 2025-02-03 by Marcos Amores
 
 ## General information
 
 ### 1. Title:
    
-  Absolute abundance calculator (v1.1.0)
+  Absolute abundance calculator (v1.1.1)
 
 ### 2. Leading/corresponding author:
    
@@ -19,14 +19,14 @@ This ReadMe file was generated on 2024-11-20 by Marcos Amores
 
 ### 3. Date of present version:
    
-  2024-12-14
+  2025-02-03
 
 
 ## Sharing/Access Information
 
 ### 1. Licenses/restrictions placed on the code:
    
-  Absolute abundance calculator © 2024 by Chris Mays, Marcos Amores, and Anthony Mays. Licensed under Creative Commons Attribution-ShareAlike 4.0 International
+  Absolute abundance calculator © 2025 by Chris Mays, Marcos Amores, and Anthony Mays. Licensed under Creative Commons Attribution-ShareAlike 4.0 International
 
 ## Troubleshooting
 
