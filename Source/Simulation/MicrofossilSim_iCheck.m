@@ -1,4 +1,4 @@
-function [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tlim,fovsx,fovsn,printflag,fnnobins)
+function [treturn,calreturn,extrapreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tlim,fovsx,fovsn,printflag,fnnobins)
 
     dim=100;
     fossils=rand(Mx,2)*dim;
@@ -55,7 +55,7 @@ function [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tl
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %Fields of view (fovs) for calibration counts (x)
-    fx=size(fovsx,2);%Number of calibration FOVs, N_3 in Eqn 3.
+    fx=size(fovsx,2);%Number of calibration FOVs, N_{3C} in Eqn 5.
     fxcounts=zeros(1,fx);
     aperturewidthx=fovsx(2,1)-fovsx(1,1);
     apertureheightx=fovsx(4,1)-fovsx(3,1);
@@ -89,10 +89,10 @@ function [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tl
     calreturn=[fnumberx,fmeanx,fvarx,fovsdx];
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % FOVs method --- Step 4, full counts
+    % FOVs method --- Step 4, extrapolation counts
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %Fields of view (fovs) for full counts (n)
+    %Fields of view (fovs) for extrapolation counts (n)
     fn=size(fovsn,2);
     fncounts=zeros(1,fn);
     truefxcounts=zeros(1,fn);
@@ -101,7 +101,7 @@ function [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tl
     fovnarea=aperturewidthn*apertureheightn;
     %Count number of exotics and fossils in each fov
     for i= 1:fn
-        %fprintf(2,'full count fov i = %d\n',i);
+        %fprintf(2,'extrapolation count fov i = %d\n',i);
         %find edges of fov
         fovleft=fovsn(1,i);
         fovright=fovsn(2,i);
@@ -129,10 +129,10 @@ function [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tl
     
     %%%
     
-    fnumbertruex=sum(truefxcounts); %Actual number of total x in full count FOVs
+    fnumbertruex=sum(truefxcounts); %Actual number of total x in extrapolation count FOVs
     fmeantruex=mean(truefxcounts);
     Truexfpc=(Mx-fnumbertruex)/Mx;%finite population correction (Schaeffer)
-    fovc4=sqrt(2/(fn-1))*gamma(fn/2)/gamma((fn-1)/2);%Sampling st dev correction factor for full counts
+    fovc4=sqrt(2/(fn-1))*gamma(fn/2)/gamma((fn-1)/2);%Sampling st dev correction factor for extrapolation counts
     fovsdtruex=(std(truefxcounts)/fmeantruex)/sqrt(fn)/fovc4/sqrt(Truexfpc);
     
     fnumbern=sum(fncounts);
@@ -143,14 +143,14 @@ function [treturn,calreturn,fullreturn,newfnhist]=MicrofossilSim_iCheck(Mx,Mn,tl
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % FOVs method --- Step 5, concentration and error
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    xhat=fmeanx*fn; %Estimated number of total x in full count FOVs
+    xhat=fmeanx*fn; %Estimated number of total x in extrapolation count FOVs
     concentration= xhat*Mn/fnumbern;
     
     
-    %fullreturn of form:
-    %row 1= [counted x in all full FOVs, mean x in full FOVs, std dev of x in full FOVs, estimated total x]
-    %row 2= [counted n in all full FOVs, mean n in full FOVs, std dev of n in full FOVs, concentration]
-    fullreturn=[fnumbertruex,fmeantruex,fovsdtruex,xhat;fnumbern,fmeann,fovsdn,concentration];
+    %extrapreturn of form:
+    %row 1= [counted x in all extrapolation FOVs, mean x in extrapolation FOVs, std dev of x in extrapolation FOVs, estimated total x]
+    %row 2= [counted n in all extrapolation FOVs, mean n in extrapolation FOVs, std dev of n in extrapolation FOVs, concentration]
+    extrapreturn=[fnumbertruex,fmeantruex,fovsdtruex,xhat;fnumbern,fmeann,fovsdn,concentration];
     
     %print the fossils and exotics with the transect and the fovs
     if printflag==1
