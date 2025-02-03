@@ -71,6 +71,8 @@ Attribute VB_Name = "ShowCalculator"
         Public LinearChosen As Boolean
         Public FOVSTargetChosen As Boolean
         Public FOVSMarkerChosen As Boolean
+        Public FOVSTargetIntroGiven As Boolean
+        Public FOVSMarkerIntroGiven As Boolean
         Public ClearedAllData As Boolean
         Public ShutdownRequested As Boolean
         Public CountingSaved As Boolean

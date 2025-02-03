@@ -31,6 +31,10 @@ Private Sub CommandButton_Assistant_Click()
     AssistantCounting.Show
 End Sub
 
+Private Sub CommandButton_Glossary_Click()
+    Glossary.Show
+End Sub
+
     Private Sub txt_X_FOVS_Change()
                 
         If InputsSaved And FOVSTargetChosen Then
@@ -71,6 +75,9 @@ End Sub
 
 Private Sub CommandButtonSaveCalibrationFOV_Click()
     ' Store values in memory
+    
+    ' X
+    
     If IsNumeric(txt_X_FOVS.Value) And FOVSTargetChosen Then
         X = CLng(txt_X_FOVS.Value)
         InputEmptyX = False
@@ -138,72 +145,58 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
     If FOVSTargetChosen And Not InputEmptyAny Then ' For FOVS Target method
         CalculatorFOVSTarget.CommandButton_CalibrationFOV.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSTarget.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data ready)"
-        
-        
-        CalculatorFOVSTarget.txt_N_FOVS.Enabled = True
-        CalculatorFOVSTarget.txt_N_FOVS.BackColor = RGB(255, 255, 255)
-        CalculatorFOVSTarget.txt_N3E.Enabled = True
-        CalculatorFOVSTarget.txt_N3E.BackColor = RGB(255, 255, 255)
-        
+                
         ' Refresh certain outputs.
-        
-        If N <> 0 Then
-            uhat = X / N
-        Else
-            ' Do nothing.
-        End If
         Y3x = X / N3C
-        
-        If FOVTransitionEffort <> 0 Then
-            Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (FOVTransitionEffort / uhat)))) / ((Y3x * (Sqr(Y3x + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-            Nstar3E = (uhat / (((LevelError / 100) * (LevelError / 100)) - ((N1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (uhat * FOVTransitionEffort)))) / (Y3x * (Sqr(Y3x + (uhat * FOVTransitionEffort))))
-            deltastar = uhat * Sqr((FOVTransitionEffort + Y3x) / ((FOVTransitionEffort * uhat) + Y3x))
-            eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3E) + N
-            eF_sigmabar = ((2 * Y3x) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr((Y3x + FOVTransitionEffort) * (Y3x + (uhat * FOVTransitionEffort)))))) / (Y3x * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
+                
+        ' Display outputs in calculator.
+             
+        If Y3x <> 0 Then ' If Y3x is not equal to 0, render it in the label.
+            CalculatorFOVSTarget.LabelResult_Y3x.Enabled = True
+            CalculatorFOVSTarget.LabelResult_Y3x.Text = Format(Y3x, "0.000")
+            CalculatorFOVSTarget.LabelResult_Y3x.BackColor = RGB(255, 255, 255)
         Else
-            ' FOVTransitionEffort is equal to 0, do not run calculation
+            CalculatorFOVSTarget.LabelResult_Y3x.BackColor = RGB(224, 224, 224)
         End If
         
-        ' Display outputs in calculator.
+    ElseIf FOVSTargetChosen And InputEmptyAny Then
+        CalculatorFOVSTarget.CommandButton_CalibrationFOV.BackColor = RGB(245, 148, 146) ' Reddish color
+        CalculatorFOVSTarget.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data missing)"
         
-        CalculatorFOVSTarget.LabelResult_OptimalCalibrationFOV.Value = Format(Y3x, "0.00")
-        CalculatorFOVSTarget.LabelResult_OptimalCalibrationFOV.Value = Format(Nstar3C, "0.00")
-        CalculatorFOVSTarget.LabelResult_OptimalFullFOV.Value = Format(Nstar3E, "0.00")
-        CalculatorFOVSTarget.LabelResult_OptimalRatioFOV.Value = Format(deltastar, "0.00")
-        CalculatorFOVSTarget.LabelResult_CollectionEffort_FOVS.Value = Format(eF, "0")
-        CalculatorFOVSTarget.LabelResult_PredictedCollectionEffort_FOVS.Value = Format(eF_sigmabar, "0")
-        
+            If Y3x <> Empty Then
+                CalculatorFOVSTarget.LabelResult_Y3x.Value = Empty
+                CalculatorFOVSTarget.LabelResult_Y3x.Enabled = False
+                CalculatorFOVSTarget.LabelResult_Y3x.BackColor = RGB(224, 224, 224)
+            Else
+            End If
+    
     ElseIf FOVSMarkerChosen And Not InputEmptyAny Then ' For FOVS Marker method
         CalculatorFOVSMarker.CommandButton_CalibrationFOV.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSMarker.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data ready)"
         
-        CalculatorFOVSMarker.txt_X_FOVS.Enabled = True
-        CalculatorFOVSMarker.txt_X_FOVS.BackColor = RGB(255, 255, 255)
-        CalculatorFOVSMarker.txt_N3E.Enabled = True
-        CalculatorFOVSMarker.txt_N3E.BackColor = RGB(255, 255, 255)
-        
         ' Refresh certain outputs.
-        uhat = X / N
         Y3n = N / N3C
-                
-        If FOVTransitionEffort <> 0 Then
-            Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + (Sqr(Y3n + (FOVTransitionEffort / uhat)))) / ((Y3n * (Sqr(Y3n + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-            Nstar3E = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
-            deltastar = uhat * Sqr((FOVTransitionEffort + (Y3n * uhat)) / ((FOVTransitionEffort * uhat) + (Y3n * uhat)))
-            eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3E) + N
-            eF_sigmabar = ((2 * (Y3n * uhat)) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr(((Y3n * uhat) + FOVTransitionEffort) * ((Y3n * uhat) + (uhat * FOVTransitionEffort)))))) / ((Y3n * uhat) * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
-        Else
-            ' FOVTransitionEffort is equal to 0, do not run calculation
-        End If
         
         ' Display outputs in calculator.
+
+        If Y3n <> 0 Then ' If Y3x is not equal to 0, render it in the label.
+            CalculatorFOVSMarker.LabelResult_Y3n.Enabled = True
+            CalculatorFOVSMarker.LabelResult_Y3n.Text = Format(Y3n, "0.000")
+            CalculatorFOVSMarker.LabelResult_Y3n.BackColor = RGB(255, 255, 255)
+        Else
+            CalculatorFOVSMarker.LabelResult_Y3n.BackColor = RGB(224, 224, 224)
+        End If
         
-        CalculatorFOVSMarker.LabelResult_OptimalCalibrationFOV.Value = Format(Y3n, "0.00")
-        CalculatorFOVSMarker.LabelResult_OptimalCalibrationFOV.Value = Format(Nstar3C, "0.00")
-        CalculatorFOVSMarker.LabelResult_OptimalFullFOV.Value = Format(Nstar3E, "0.00")
-        CalculatorFOVSMarker.LabelResult_OptimalRatioFOV.Value = Format(deltastar, "0.00")
-        CalculatorFOVSMarker.LabelResult_CollectionEffort_FOVS.Value = Format(eF, "0")
-        CalculatorFOVSMarker.LabelResult_PredictedCollectionEffort_FOVS.Value = Format(eF_sigmabar, "0")
+   ElseIf FOVSMarkerChosen And InputEmptyAny Then
+        CalculatorFOVSMarker.CommandButton_CalibrationFOV.BackColor = RGB(245, 148, 146) ' Reddish color
+        CalculatorFOVSMarker.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data missing)"
+        
+            If Y3n <> Empty Then
+                CalculatorFOVSMarker.LabelResult_Y3n.Value = Empty
+                CalculatorFOVSMarker.LabelResult_Y3n.Enabled = False
+                CalculatorFOVSMarker.LabelResult_Y3n.BackColor = RGB(224, 224, 224)
+            Else
+            End If
     End If
     
     ' Adding flags.
@@ -355,21 +348,15 @@ End Sub
 ' Avoid pasting words and numbers.
 
 Private Sub txt_X_FOVS_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_N3c_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_s3_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -451,8 +438,10 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
                 End If
             End If
         End If
+    Else
+    Unload Me
     End If
     
-    ClearedAllData = False
+'    ClearedAllData = False
     
 End Sub

@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorLinear 
-   Caption         =   "Absolute abundance calculator v1.1.0 - Linear method"
+   Caption         =   "Absolute abundance calculator v1.1.1 - Linear method"
    ClientHeight    =   5415
    ClientLeft      =   120
    ClientTop       =   465
@@ -145,6 +145,10 @@ Private Sub CommandButton_ClearAll_Click()
     Else
     ' User cancelled, do nothing
     End If
+End Sub
+
+Private Sub CommandButton_Glossary_Click()
+    Glossary.Show
 End Sub
 
 Private Sub CommandButton_MethodDetermination_Click()
@@ -517,31 +521,31 @@ End Sub
 
 Private Sub CommandButton_SaveVariables_Linear_Click()
     ' Validate other input fields to see if not empty.
-    If Not IsNumeric(txt_X.Value) And Not ShutdownRequested Then
-        MsgBox "Please enter the number of targets counted [x].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
+'    If Not IsNumeric(txt_X.Value) And Not ShutdownRequested Then
+'        MsgBox "Please enter the number of targets counted [x].", vbExclamation, "Input Required"
+'        Exit Sub
+'    End If
     
-    If Not IsNumeric(txt_N.Value) And Not ShutdownRequested Then
-        MsgBox "Please enter the number of markers counted [n].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
+'    If Not IsNumeric(txt_N.Value) And Not ShutdownRequested Then
+'        MsgBox "Please enter the number of markers counted [n].", vbExclamation, "Input Required"
+'        Exit Sub
+'    End If
     
-    If Not IsNumeric(txt_ConfidenceInterval.Value) And Not ShutdownRequested Then
-        MsgBox "Please enter the desired confidence interval as a percentage (e.g., 95).", vbExclamation, "Input Required"
-        Exit Sub
-    End If
+'    If Not IsNumeric(txt_ConfidenceInterval.Value) And Not ShutdownRequested Then
+'        MsgBox "Please enter the desired confidence interval as a percentage (e.g., 95).", vbExclamation, "Input Required"
+'        Exit Sub
+'    End If
 
-    If Not IsNumeric(txt_LevelError.Value) And Not ShutdownRequested Then
-        MsgBox "Please enter the desired target level of error as a percentage (e.g., 10).", vbExclamation, "Input Required"
-        Exit Sub
-    End If
+'    If Not IsNumeric(txt_LevelError.Value) And Not ShutdownRequested Then
+'        MsgBox "Please enter the desired target level of error as a percentage (e.g., 10).", vbExclamation, "Input Required"
+'        Exit Sub
+'    End If
     
-    If Not SavedMarkerDetails And Not ShutdownRequested Then
-        MsgBox "Please enter marker characteristics.", vbExclamation, "Input Required"
-        MarkerCharacteristics.Show
-        Exit Sub
-    End If
+'    If Not SavedMarkerDetails And Not ShutdownRequested Then
+'        MsgBox "Please enter marker characteristics.", vbExclamation, "Input Required"
+'        MarkerCharacteristics.Show
+'        Exit Sub
+'    End If
     
     ' Make sure calculations are run first
     If Not ShutdownRequested Then
@@ -554,7 +558,7 @@ Private Sub CommandButton_SaveVariables_Linear_Click()
     ' Create a new worksheet named "Exported data (Linear)"
     ' Check if the sheet "Exported data (Linear)" already exists
     For Each ws In ThisWorkbook.Worksheets
-        If ws.Name = "Exported data (Linear)" Then
+        If ws.Name = "Saved Variables (Linear)" Then
             SavedVariablesLinearExists = True
             Set SavedVariablesLinear = ws
             Exit For
@@ -564,7 +568,7 @@ Private Sub CommandButton_SaveVariables_Linear_Click()
     ' If the sheet doesn't exist, create a new one
     If Not SavedVariablesLinearExists Then
         Set SavedVariablesLinear = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets("Calculator"))
-        SavedVariablesLinear.Name = "Exported data (Linear)"
+        SavedVariablesLinear.Name = "Saved Variables (Linear)"
         AddHeadersLinear SavedVariablesLinear
         
         ' Clear nextRow and lastNonEmptyRow
@@ -610,7 +614,7 @@ Private Sub CommandButton_SaveVariables_Linear_Click()
     
     ' Inform the user that values have been saved
     InfoExported = True
-    MsgBox "Values have been saved to the worksheet 'Exported data (Linear)'.", vbInformation
+    MsgBox "Values have been saved to the worksheet 'Saved Variables (Linear)'.", vbInformation
     
     If ShutdownRequested Then
         End
@@ -759,27 +763,19 @@ End Sub
 ' Avoid pasting words and numbers.
 
 Private Sub txt_X_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_N_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_ConfidenceInterval_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_LevelError_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 '

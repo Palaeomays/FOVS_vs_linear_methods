@@ -85,6 +85,11 @@ End Sub
 '
 
 Private Sub UserForm_Initialize()
+    If Len(SampleName) > 1 Then
+        txt_SampleName.Text = SampleName
+    Else
+    End If
+    
     If OriginStarter Or OriginLinear Or OriginFOVSTarget Or OriginFOVSMarker Or OriginCountingEffort Or OriginCalibrationFOV Then
         MsgBox "The counting assistant is designed to enable up to nine target and one marker specimen categories to be counted concurrently." & vbNewLine & vbNewLine & "First: label the specimen categories you wish to count." & vbNewLine & "Second: perform a count of the first field of view." & vbNewLine & "Third: Press the 'next FOV' button when you transition to a new field of view." & vbNewLine & vbNewLine & "The hotkeys enable the rapid counting of multiple specimen categories using the 0–9 keys on a keyboard or numpad." & vbNewLine & vbNewLine & "The optional timer enables the automatic calculation of data collection effort and the determination of the most efficient count method." & vbNewLine & vbNewLine & "IMPORTANT: for valid statistics, please ensure that you include all specimen categories before counting.", vbInformation
     
@@ -328,69 +333,47 @@ End Sub
 ' Avoid pasting words and numbers.
 
 Private Sub txt_Now1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now2_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now3_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now4_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now5_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now6_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now7_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now8_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now9_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Now0_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_TimeTotal_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 '

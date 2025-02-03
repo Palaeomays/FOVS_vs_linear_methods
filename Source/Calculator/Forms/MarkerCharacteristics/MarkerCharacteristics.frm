@@ -30,6 +30,10 @@ Attribute VB_Exposed = False
     Private UnsavedWarningGiven As Boolean
 
 
+Private Sub CommandButton_Glossary_Click()
+    Glossary.Show
+End Sub
+
 '
 ' Startup
 '
@@ -527,39 +531,27 @@ End Sub
 ' Avoid pasting words and numbers.
 
 Private Sub txt_N1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Y1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_S1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_N2_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_Y2_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_S2_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub CommandButton_Assistant_Click()
@@ -702,8 +694,9 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
                 End If
             End If
         End If
+    Unload Me
     End If
     
-    ClearedAllData = False
+'    ClearedAllData = False
     
 End Sub

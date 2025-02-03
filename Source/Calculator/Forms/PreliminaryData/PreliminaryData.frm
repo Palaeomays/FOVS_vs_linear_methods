@@ -20,6 +20,10 @@ Attribute VB_Exposed = False
     Private InputsSaved As Boolean
     Private UnsavedWarningGiven As Boolean
     
+Private Sub CommandButton_Glossary_Click()
+    Glossary.Show
+End Sub
+
 '
 ' Startup
 '
@@ -297,57 +301,39 @@ Attribute VB_Exposed = False
     ' Avoid pasting words and numbers.
     
     Private Sub txt_X_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
       
     Private Sub txt_N_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
     
     Private Sub txt_N3c_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
     
     Private Sub txt_TimeFOV_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
     
     Private Sub txt_TimeTotal_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
     
     Private Sub txt_N1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
 
     Private Sub txt_Y1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
 
     Private Sub txt_S1_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
     
     Private Sub txt_LevelError_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-        If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-            KeyCode = 0
-        End If
+        AvoidCopyPaste KeyCode, Shift
     End Sub
 
 '
@@ -648,6 +634,7 @@ Attribute VB_Exposed = False
         
         InputsSaved = True
         UnsavedWarningGiven = False
+        OriginPreliminaryData = True
         
         Unload Me
         

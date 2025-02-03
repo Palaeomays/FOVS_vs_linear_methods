@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorFOVSMarker 
-   Caption         =   "Absolute abundance calculator v1.1.0 - FOVS method (Marker focus)"
+   Caption         =   "Absolute abundance calculator v1.1.1 - FOVS method (Marker focus)"
    ClientHeight    =   6285
    ClientLeft      =   120
    ClientTop       =   465
@@ -204,6 +204,10 @@ Private Sub CommandButton_FocusTargets_Click()
     End If
 End Sub
 
+Private Sub CommandButton_Glossary_Click()
+    Glossary.Show
+End Sub
+
 Private Sub CommandButton_MarkerCharacteristics_Click()
     FOVSMarkerChosen = True
     MarkerCharacteristics.Show
@@ -211,32 +215,32 @@ End Sub
 
 Private Sub CommandButton_SaveVariables_FOVS_Click()
     ' Validate other input fields to see if not empty.
-    If Not IsNumeric(txt_X_FOVS.Value) And Not ShutdownRequested Then
-        MsgBox "Please enter the number of targets counted [x].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
+'    If Not IsNumeric(txt_X_FOVS.Value) And Not ShutdownRequested Then
+'        MsgBox "Please enter the number of targets counted [x].", vbExclamation, "Input Required"
+'        Exit Sub
+'    End If
     
-    If Not IsNumeric(txt_N3E.Value) And Not ShutdownRequested Then
-        MsgBox "Please enter the amount of observed fields-of-view seen in the extrapolation count [N3E].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
+'    If Not IsNumeric(txt_N3E.Value) And Not ShutdownRequested Then
+'        MsgBox "Please enter the amount of observed fields-of-view seen in the extrapolation count [N3E].", vbExclamation, "Input Required"
+'        Exit Sub
+'    End If
     
-    If Not SavedMarkerDetails And Not ShutdownRequested Then
-        MsgBox "Please enter marker characteristics.", vbExclamation, "Input Required"
-        MarkerCharacteristics.Show
-        Exit Sub
-    End If
+'    If Not SavedMarkerDetails And Not ShutdownRequested Then
+'        MsgBox "Please enter marker characteristics.", vbExclamation, "Input Required"
+'           MarkerCharacteristics.Show
+'        Exit Sub
+'    End If
     
-    If Not CalibratedFOV And Not ShutdownRequested Then
-        MsgBox "Please attempt a FOV calibration.", vbExclamation, "Input Required"
-        MarkerCharacteristics.Show
-        Exit Sub
-    End If
+'    If Not CalibratedFOV And Not ShutdownRequested Then
+'        MsgBox "Please attempt a FOV calibration.", vbExclamation, "Input Required"
+'        MarkerCharacteristics.Show
+'        Exit Sub
+'    End If
     
     ' Make sure calculations are run first
-    If Not ShutdownRequested Then
-        CommandButton_Calculate_FOVS_Click
-    End If
+'    If Not ShutdownRequested Then
+'        CommandButton_Calculate_FOVS_Click
+'    End If
     
     ' Initialize the variable to False
     SavedFOVSMarkerExists = False
@@ -244,7 +248,7 @@ Private Sub CommandButton_SaveVariables_FOVS_Click()
     ' Create a new worksheet named "Saved Variables (FOVS_Marker)"
     ' Check if the sheet "Saved Variables (FOVS)" already exists
     For Each ws In ThisWorkbook.Worksheets
-        If ws.Name = "Exported data (FOVS-M)" Then
+        If ws.Name = "Saved Variables (FOVS_Marker)" Then
             SavedVariablesFOVSMarkerExists = True
             Set SavedVariablesFOVSMarker = ws
             Exit For
@@ -305,7 +309,7 @@ Private Sub CommandButton_SaveVariables_FOVS_Click()
     
     ' Inform the user that values have been saved
     InfoExported = True
-    MsgBox "Values have been saved to the worksheet 'Exported data (FOVS-M)'.", vbInformation
+    MsgBox "Values have been saved to the worksheet 'Saved Variables (FOVS_Marker)'.", vbInformation
     
     If ShutdownRequested Then
         End
@@ -349,11 +353,13 @@ Private Sub AddHeadersFOVSMarker(ByRef ws As Worksheet)
     End With
 End Sub
 
-
 ' Populate inputs with previous values if these exist. Sets the value of the textbox to the value of the public variable.
 Private Sub UserForm_Initialize()
-    MsgBox "The FOVS method requires a series of 'calibration counts' followed by a series of 'extrapolation counts'. To insert the calibration count data, press the 'field of view (FOV) calibration count' button." & vbNewLine & vbNewLine & "Once these are filled, the 'extrapolation count' fields will be available." & vbNewLine & vbNewLine & "Absolute abundances (and associated error) will require the addition of data from the marker specimens being used. To do so, press the 'marker and sample characteristrics' button." & vbNewLine & vbNewLine & "(Optional: To predict the amount of sampling effort required for a given assemblage, insert the relevant data by pressing the 'optimisation data' button.)", vbInformation
-    
+    If Not FOVSMarkerIntroGiven Then
+        MsgBox "The FOVS method requires a series of 'calibration counts' followed by a series of 'extrapolation counts'. To insert the calibration count data, press the 'field of view (FOV) calibration count' button." & vbNewLine & vbNewLine & "Once these are filled, the 'extrapolation count' fields will be available." & vbNewLine & vbNewLine & "Absolute abundances (and associated error) will require the addition of data from the marker specimens being used. To do so, press the 'marker and sample characteristrics' button." & vbNewLine & vbNewLine & "(Optional: To predict the amount of sampling effort required for a given assemblage, insert the relevant data by pressing the 'optimisation data' button.)", vbInformation
+        FOVSTargetIntroGiven = True
+    Else
+    End If
     ' Check if certain sheets are present. Iterate through all worksheets in the workbook.
     
     For Each ws In ThisWorkbook.Worksheets
@@ -375,16 +381,12 @@ Private Sub UserForm_Initialize()
         txt_LevelError = LevelError
     End If
     
-    If CalibratedFOV Then
-        txt_X_FOVS.Enabled = True
-        txt_X_FOVS.BackColor = RGB(255, 255, 255)
-        
-        txt_N3E.Enabled = True
-        txt_N3E.BackColor = RGB(255, 255, 255)
-    Else
-        txt_X_FOVS.BackColor = RGB(224, 224, 224)
-        txt_N3E.BackColor = RGB(224, 224, 224)
-    End If
+'    If CalibratedFOV Then
+'        txt_N3E.Enabled = True
+'        txt_N3E.BackColor = RGB(255, 255, 255)
+'    Else
+'        txt_N3E.BackColor = RGB(224, 224, 224)
+'    End If
               
     If Nstar3C <> 0 Then ' If Nstar3C is not equal to 0, render it in the label.
         LabelResult_OptimalCalibrationFOV.Enabled = True
@@ -487,6 +489,16 @@ Private Sub UserForm_Initialize()
         CommandButton_CountingEffort.BackColor = RGB(212, 236, 214) ' Greenish color
         CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data ready)"
     End If
+    
+    ' Check if Preliminary calculations were done. Changes color from red to green.
+            
+    If Not X <> 0 And Not N <> 0 And Not N3C <> 0 And Not TimeFOV <> 0 And Not TimeTotal <> 0 Then
+        CommandButton_CountingEffort.BackColor = RGB(245, 148, 146) ' Reddish color
+        CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data missing)"
+    Else
+        CommandButton_CountingEffort.BackColor = RGB(212, 236, 214) ' Greenish color
+        CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data ready)"
+    End If
 End Sub
 
 ' Check for changes in inputs.
@@ -514,34 +526,8 @@ End Sub
 '
 
 Private Sub CommandButton_Calculate_FOVS_Click()
-   ' Validate other input fields to see if not empty.
-    If Not CalibratedFOV Or N3C = 0 Then
-        MsgBox "Please attempt a FOV calibration.", vbExclamation, "Input Required"
-        FOVSMarkerChosen = True
-        CalibratorFOV.Show
-        Exit Sub
-    End If
-    
-    If Not IsNumeric(txt_X_FOVS.Value) Then
-        MsgBox "Please enter the number of targets counted in the extrapolation counts [x].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-    
-    If Not IsNumeric(txt_N3E.Value) Then
-        MsgBox "Please enter the amount of observed fields-of-view seen in the extrapolation count [N3E].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-    
-    If Not IsNumeric(txt_LevelError.Value) Then
-        MsgBox "Please enter the desired target level of error as a percentage (e.g., 10).", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-    
-    If Not SavedMarkerDetails Then
-        MsgBox "Please enter marker and sample characteristics.", vbExclamation, "Input Required"
-        MarkerCharacteristics.Show
-        Exit Sub
-    End If
+   
+' Validate other input fields to see if not empty.
     
     ' Store values in memory
     
@@ -549,22 +535,28 @@ Private Sub CommandButton_Calculate_FOVS_Click()
         SampleName = txt_SampleName.Text
     Else
     End If
-    
-    X = CLng(txt_X_FOVS.Value)
-    N3E = CLng(txt_N3E.Value)
-    LevelError = CDbl(txt_LevelError.Value) 'TODO Can lead to negatives later on if less than 5.
-    
-    If X <= 0 Then
-        MsgBox "Number of targets needs to be higher than 0.", vbExclamation
-        Exit Sub
-    End If
-    
+        
     InputsSaved = True
     
    ' Perform background calculations
-    Y3n = N / N3C
+    If Not CalibratedFOV Or N3C = 0 Then
+        MsgBox "Please attempt a FOV calibration.", vbExclamation, "Input Required"
+        FOVSMarkerChosen = True
+        CalibratorFOV.Show
+        Exit Sub
+    End If
     
-    nhat = N3E * Y3n
+    ' Y3n
+        Y3n = N / N3C
+        
+        LabelResult_Y3n.Text = Format(Y3n, "0.000")
+        
+        If IsNumeric(LabelResult_Y3n.Value) Then
+            LabelResult_Y3n.Enabled = True
+            LabelResult_Y3n.BackColor = RGB(255, 255, 255)
+        Else
+            LabelResult_Y3n.BackColor = RGB(224, 224, 224)
+        End If
     
     'Dim Vline As Double ' Total mass or volume of samples ' TODO Include as in Linear?
     'Vline = N2 * Y2
@@ -584,44 +576,159 @@ Private Sub CommandButton_Calculate_FOVS_Click()
     Dim s3P As Double ' Proportional corrected sample standard deviation - common grains/FOV
     s3P = (sigmahat3 / Y3n)
 
+    ' Check if X values exist before running following calculations.
+    
+    If Len(txt_X_FOVS.Text) = 0 Then
+        MsgBox "Please enter the number of targets counted in the extrapolation counts [X].", vbExclamation, "Input Required"
+        txt_X_FOVS.SetFocus
+        Exit Sub
+    End If
+    
+    X = CLng(txt_X_FOVS.Value)
+    
+    If X <= 0 Then
+        MsgBox "Number of targets needs to be higher than 0.", vbExclamation
+        txt_X_FOVS.SetFocus
+        Exit Sub
+    End If
+    
     ' Variable defined as public in ShowCalculator module
-    uhat = X / nhat ' Marker-specific
+    
+    If Len(txt_N3E.Value) > 0 Then
+        N3E = CLng(txt_N3E.Value)
+    Else
+    End If
+    
+    If N3E = Empty Then
+        uhat = X / N
+    Else
+        nhat = N3E * Y3n
+        uhat = X / nhat
+        LabelResult_nhat.Text = Format(nhat, "0")
+    End If
+    
+    LabelResult_uhat_FOVS.Text = Format(uhat, "0.000")
+    
+    If IsNumeric(LabelResult_uhat_FOVS.Value) Then
+        LabelResult_uhat_FOVS.Enabled = True
+        LabelResult_uhat_FOVS.BackColor = RGB(255, 255, 255)
+    Else
+        LabelResult_uhat_FOVS.BackColor = RGB(224, 224, 224)
+    End If
  
     ' Perform visible calculations
-    Dim c As Double ' Mean number of target specimens per unit mass or volume
-    ' C = (X * Y1 * N1) / (nhat * Vline) ' TODO Include as in Linear? Going with below code.
-    c = (X * Y1 * N1) / (nhat * Y2)
     
-    Dim sigma_Fn As Double ' Total target concentration standard error with FOVS method
-    sigma_Fn = 100 * Sqr((((s1 / Y1) / Sqr(N1)) ^ 2) + ((Sqr(X) / X) ^ 2) + (s3P / Sqr(N3C)) ^ 2)
+    If Not IsNumeric(txt_LevelError.Value) Then
+        MsgBox "Please enter the desired target level of error as a percentage (e.g., 10).", vbExclamation, "Input Required"
+        txt_LevelError.SetFocus
+        Exit Sub
+    End If
+    
+    LevelError = CDbl(txt_LevelError.Value) 'TODO Can lead to negatives later on if less than 5.
+        
+    If FOVTransitionEffort = 0 Then
+        MsgBox "Please enter Optimisation Data.", vbExclamation, "Input Required"
+        CountingEffort.Show
+        Exit Sub
+    Else
+        LabelResult_FOVTransitionEffort.Text = Format(FOVTransitionEffort, "0.000")
+        If IsNumeric(LabelResult_FOVTransitionEffort.Value) And FOVTransitionEffort <> 0 Then
+            LabelResult_FOVTransitionEffort.Enabled = True
+            LabelResult_FOVTransitionEffort.BackColor = RGB(255, 255, 255)
+        ElseIf IsNumeric(LabelResult_FOVTransitionEffort.Value) And FOVTransitionEffort = 0 Then
+        ' FOVTransitionEffort is equal to 0, do not show
+            LabelResult_FOVTransitionEffort.Text = ""
+        Else
+            LabelResult_FOVTransitionEffort.BackColor = RGB(224, 224, 224)
+        End If
+        
+        deltastar = uhat * Sqr((FOVTransitionEffort + (Y3n * uhat)) / ((FOVTransitionEffort * uhat) + (Y3n * uhat)))
+        LabelResult_OptimalRatioFOV.Text = Format(deltastar, "0.00")
+        
+        If IsNumeric(LabelResult_OptimalRatioFOV.Value) And FOVTransitionEffort <> 0 Then
+            LabelResult_OptimalRatioFOV.Enabled = True
+            LabelResult_OptimalRatioFOV.BackColor = RGB(255, 255, 255)
+        ElseIf IsNumeric(LabelResult_OptimalRatioFOV.Value) And FOVTransitionEffort = 0 Then
+            ' FOVTransitionEffort is equal to 0, do not show
+            LabelResult_OptimalRatioFOV.Text = ""
+        Else
+            LabelResult_OptimalRatioFOV.BackColor = RGB(224, 224, 224)
+        End If
+    End If
+        
+    If FOVTransitionEffort <> 0 And Not SavedMarkerDetails Then
+        MsgBox "Please enter marker and sample characteristics.", vbExclamation, "Input Required"
+        MarkerCharacteristics.Show
+        Exit Sub
+    ElseIf FOVTransitionEffort <> 0 And SavedMarkerDetails Then
+        Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + (Sqr(Y3n + (FOVTransitionEffort / uhat)))) / ((Y3n * (Sqr(Y3n + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
+        LabelResult_OptimalCalibrationFOV.Text = Format(Nstar3C, "0.00")
+        
+        If IsNumeric(LabelResult_OptimalCalibrationFOV.Value) And FOVTransitionEffort <> 0 Then
+            LabelResult_OptimalCalibrationFOV.Enabled = True
+            LabelResult_OptimalCalibrationFOV.BackColor = RGB(255, 255, 255)
+        ElseIf IsNumeric(LabelResult_OptimalCalibrationFOV.Value) And FOVTransitionEffort = 0 Then
+            ' FOVTransitionEffort is equal to 0, do not show
+            LabelResult_OptimalCalibrationFOV.Text = ""
+        Else
+            LabelResult_OptimalFullFOV.BackColor = RGB(224, 224, 224)
+        End If
+    
+        Nstar3E = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
+        LabelResult_OptimalFullFOV.Text = Format(Nstar3E, "0.00")
+    
+        If IsNumeric(LabelResult_OptimalFullFOV.Value) And FOVTransitionEffort <> 0 Then
+            LabelResult_OptimalFullFOV.Enabled = True
+            LabelResult_OptimalFullFOV.BackColor = RGB(255, 255, 255)
+        ElseIf IsNumeric(LabelResult_OptimalFullFOV.Value) And FOVTransitionEffort = 0 Then
+            ' FOVTransitionEffort is equal to 0, do not show
+            LabelResult_OptimalFullFOV.Text = ""
+        Else
+            LabelResult_OptimalFullFOV.BackColor = RGB(224, 224, 224)
+        End If
+    
+        eF_sigmabar = ((2 * (Y3n * uhat)) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr(((Y3n * uhat) + FOVTransitionEffort) * ((Y3n * uhat) + (uhat * FOVTransitionEffort)))))) / ((Y3n * uhat) * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
+        LabelResult_PredictedCollectionEffort_FOVS.Text = Format(eF_sigmabar, "0")
+    
+        If IsNumeric(LabelResult_PredictedCollectionEffort_FOVS.Value) And FOVTransitionEffort <> 0 Then
+            LabelResult_PredictedCollectionEffort_FOVS.Enabled = True
+            LabelResult_PredictedCollectionEffort_FOVS.BackColor = RGB(255, 255, 255)
+        ElseIf IsNumeric(LabelResult_PredictedCollectionEffort_FOVS.Value) And FOVTransitionEffort = 0 Then
+            LabelResult_PredictedCollectionEffort_FOVS.Text = ""
+            ' FOVTransitionEffort is equal to 0, do not show
+        Else
+            LabelResult_PredictedCollectionEffort_FOVS.BackColor = RGB(224, 224, 224)
+        End If
+    Else
+        ' FOVTransitionEffort is equal to 0, do not run calculation
+    End If
+        
+    If Not IsNumeric(txt_N3E.Value) Then
+        MsgBox "Please enter the amount of observed fields-of-view seen in the extrapolation count [N3E].", vbExclamation, "Input Required"
+        txt_N3E.SetFocus
+        Exit Sub
+    End If
     
     If FOVTransitionEffort <> 0 Then
-        Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + (Sqr(Y3n + (FOVTransitionEffort / uhat)))) / ((Y3n * (Sqr(Y3n + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-        Nstar3E = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
-        deltastar = uhat * Sqr((FOVTransitionEffort + (Y3n * uhat)) / ((FOVTransitionEffort * uhat) + (Y3n * uhat)))
         eF = (FOVTransitionEffort * N3C) + X + (FOVTransitionEffort * N3E) + N
-        eF_sigmabar = ((2 * (Y3n * uhat)) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr(((Y3n * uhat) + FOVTransitionEffort) * ((Y3n * uhat) + (uhat * FOVTransitionEffort)))))) / ((Y3n * uhat) * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
-    
+        LabelResult_CollectionEffort_FOVS.Text = Format(eF, "0")
     Else
         ' FOVTransitionEffort is equal to 0, do not run calculation
     End If
     
-    ' Display calculated results
-    LabelResult_Concentration_FOVS = Format(c, "0")
-    txt_ConcentrationUnits = SizeUnit
-    
+    Dim sigma_Fn As Double ' Total target concentration standard error with FOVS method
+    sigma_Fn = 100 * Sqr((((s1 / Y1) / Sqr(N1)) ^ 2) + ((Sqr(X) / X) ^ 2) + (s3P / Sqr(N3C)) ^ 2)
     LabelResult_ConcentrationStandardError_FOVS.Text = Format(sigma_Fn, "0.00")
     
-    LabelResult_OptimalCalibrationFOV.Text = Format(Nstar3C, "0.00")
-    LabelResult_OptimalFullFOV.Text = Format(Nstar3E, "0.00")
-    LabelResult_OptimalRatioFOV.Text = Format(deltastar, "0.00")
-    
-    LabelResult_Y3n.Text = Format(Y3n, "0.00")
-    LabelResult_uhat_FOVS.Text = Format(uhat, "0.000")
-    LabelResult_FOVTransitionEffort.Text = Format(FOVTransitionEffort, "0.000")
-    LabelResult_nhat.Text = Format(nhat, "0")
-    LabelResult_CollectionEffort_FOVS.Text = Format(eF, "0")
-    LabelResult_PredictedCollectionEffort_FOVS.Text = Format(eF_sigmabar, "0")
+    If nhat <> Empty Then
+        Dim c As Double ' Mean number of target specimens per unit mass or volume
+        ' C = (X * Y1 * N1) / (nhat * Vline) ' TODO Include as in Linear? Going with below code.
+        c = (X * Y1 * N1) / (nhat * Y2)
+        
+        LabelResult_Concentration_FOVS = Format(c, "0")
+        txt_ConcentrationUnits = SizeUnit
+    Else
+    End If
 
     'Enable and colour output backgrounds to white
     If IsNumeric(LabelResult_Concentration_FOVS.Value) Then
@@ -645,65 +752,11 @@ Private Sub CommandButton_Calculate_FOVS_Click()
         LabelResult_ConcentrationStandardError_FOVS.BackColor = RGB(224, 224, 224)
     End If
     
-    If IsNumeric(LabelResult_OptimalCalibrationFOV.Value) And FOVTransitionEffort <> 0 Then
-        LabelResult_OptimalCalibrationFOV.Enabled = True
-        LabelResult_OptimalCalibrationFOV.BackColor = RGB(255, 255, 255)
-    ElseIf IsNumeric(LabelResult_OptimalCalibrationFOV.Value) And FOVTransitionEffort = 0 Then
-        ' FOVTransitionEffort is equal to 0, do not show
-        LabelResult_OptimalCalibrationFOV.Text = ""
-    Else
-        LabelResult_OptimalFullFOV.BackColor = RGB(224, 224, 224)
-    End If
-        
-    If IsNumeric(LabelResult_OptimalFullFOV.Value) And FOVTransitionEffort <> 0 Then
-        LabelResult_OptimalFullFOV.Enabled = True
-        LabelResult_OptimalFullFOV.BackColor = RGB(255, 255, 255)
-    ElseIf IsNumeric(LabelResult_OptimalFullFOV.Value) And FOVTransitionEffort = 0 Then
-        ' FOVTransitionEffort is equal to 0, do not show
-        LabelResult_OptimalFullFOV.Text = ""
-    Else
-        LabelResult_OptimalFullFOV.BackColor = RGB(224, 224, 224)
-    End If
-    
-    If IsNumeric(LabelResult_OptimalRatioFOV.Value) And FOVTransitionEffort <> 0 Then
-        LabelResult_OptimalRatioFOV.Enabled = True
-        LabelResult_OptimalRatioFOV.BackColor = RGB(255, 255, 255)
-    ElseIf IsNumeric(LabelResult_OptimalRatioFOV.Value) And FOVTransitionEffort = 0 Then
-        ' FOVTransitionEffort is equal to 0, do not show
-        LabelResult_OptimalRatioFOV.Text = ""
-    Else
-        LabelResult_OptimalRatioFOV.BackColor = RGB(224, 224, 224)
-    End If
-    
-    If IsNumeric(LabelResult_Y3n.Value) Then
-        LabelResult_Y3n.Enabled = True
-        LabelResult_Y3n.BackColor = RGB(255, 255, 255)
-    Else
-        LabelResult_Y3n.BackColor = RGB(224, 224, 224)
-    End If
-    
-    If IsNumeric(LabelResult_uhat_FOVS.Value) Then
-        LabelResult_uhat_FOVS.Enabled = True
-        LabelResult_uhat_FOVS.BackColor = RGB(255, 255, 255)
-    Else
-        LabelResult_uhat_FOVS.BackColor = RGB(224, 224, 224)
-    End If
-    
-    If IsNumeric(LabelResult_FOVTransitionEffort.Value) And FOVTransitionEffort <> 0 Then
-        LabelResult_FOVTransitionEffort.Enabled = True
-        LabelResult_FOVTransitionEffort.BackColor = RGB(255, 255, 255)
-    ElseIf IsNumeric(LabelResult_FOVTransitionEffort.Value) And FOVTransitionEffort = 0 Then
-    ' FOVTransitionEffort is equal to 0, do not show
-        LabelResult_FOVTransitionEffort.Text = ""
-    Else
-        LabelResult_FOVTransitionEffort.BackColor = RGB(224, 224, 224)
-    End If
-    
     If IsNumeric(LabelResult_nhat.Value) Then
         LabelResult_nhat.Enabled = True
         LabelResult_nhat.BackColor = RGB(255, 255, 255)
     Else
-        LabelResult_LabelResult_nhat.BackColor = RGB(224, 224, 224)
+        LabelResult_nhat.BackColor = RGB(224, 224, 224)
     End If
     
     If IsNumeric(LabelResult_CollectionEffort_FOVS.Value) And FOVTransitionEffort <> 0 Then
@@ -713,17 +766,7 @@ Private Sub CommandButton_Calculate_FOVS_Click()
         ' FOVTransitionEffort is equal to 0, do not show
         LabelResult_CollectionEffort_FOVS.Text = ""
     Else
-        LabelResult_PredictedCollectionEffort_Linear.BackColor = RGB(224, 224, 224)
-    End If
-
-    If IsNumeric(LabelResult_PredictedCollectionEffort_FOVS.Value) And FOVTransitionEffort <> 0 Then
-        LabelResult_PredictedCollectionEffort_FOVS.Enabled = True
-        LabelResult_PredictedCollectionEffort_FOVS.BackColor = RGB(255, 255, 255)
-    ElseIf IsNumeric(LabelResult_PredictedCollectionEffort_FOVS.Value) And FOVTransitionEffort = 0 Then
-        LabelResult_PredictedCollectionEffort_FOVS.Text = ""
-        ' FOVTransitionEffort is equal to 0, do not show
-    Else
-        LabelResult_PredictedCollectionEffort_FOVS.BackColor = RGB(224, 224, 224)
+        LabelResult_CollectionEffort_FOVS.BackColor = RGB(224, 224, 224)
     End If
     
     OutputsSaved = True
@@ -827,21 +870,15 @@ End Sub
 ' Avoid pasting words and numbers.
 
 Private Sub txt_X_FOVS_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_N3E_FOVS_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_LevelError_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 '

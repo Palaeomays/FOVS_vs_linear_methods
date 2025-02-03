@@ -15,7 +15,10 @@ End Sub
 
 ' Avoid copy and pasting (ctrl+v) in text boxes.
 Public Sub AvoidCopyPaste(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+v (paste)
-        KeyCode = 0
-    End If
+'    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+v (paste)
+'        KeyCode = 0
+'    End If
 End Sub
+
+' Clear ALL data (inputs, outputs, variables).
+

@@ -23,22 +23,47 @@ Attribute VB_Exposed = False
     Dim InputEmptyTimeTotal As Boolean
     Private UnsavedWarningGiven As Boolean
 
+Private Sub CommandButton_Glossary_Click()
+    Glossary.Show
+End Sub
+
 ' Populate inputs with previous values if these exist. Sets the value of the textbox to the value of the public variable.
 Private Sub UserForm_Initialize()
-    
     UnsavedWarningGiven = False
-        
-    If X <> 0 Then
-        txt_X.Text = X
-    Else
-        txt_X.Text = ""
-    End If
     
-    If N <> 0 Then
-        txt_N.Text = N
-    Else
-        txt_N.Text = ""
+    If FOVSTargetChosen Then
+        If N = 0 Then
+            txt_N.Text = CalculatorFOVSTarget.txt_N_FOVS.Text
+        ElseIf N <> 0 Then
+            txt_N.Text = N
+        End If
+        
+        If X <> 0 Then
+            txt_X.Text = X
+        End If
+    ElseIf FOVSMarkerChosen Then
+        If X = 0 Then
+            txt_N.Text = CalculatorFOVSMarker.txt_X_FOVS.Text
+        ElseIf X <> 0 Then
+            txt_X.Text = X
+        End If
+        
+        If N <> 0 Then
+            txt_N.Text = N
+        End If
     End If
+        
+'    If X <> 0 Then
+'        txt_X.Text = X
+'    Else
+'        txt_X.Text = ""
+'    End If
+    
+'    If N <> 0 Then
+'        txt_N.Text = N
+'    Else
+'        txt_N.Text = ""
+'    End If
 
     If N3C <> 0 Then
         txt_N3c.Text = N3C
@@ -283,16 +308,30 @@ Private Sub CommandButtonSave_Click()
     ElseIf FOVSTargetChosen And Not InputEmptyAny Then ' For FOVS Target method
         CalculatorFOVSTarget.CommandButton_CountingEffort.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSTarget.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data ready)"
+        
+        If N <> 0 Then
+            CalculatorFOVSTarget.txt_N_FOVS.Text = Format(N, "0")
+        Else
+        End If
+        
     ElseIf FOVSTargetChosen And InputEmptyAny Then
         CalculatorFOVSTarget.CommandButton_CountingEffort.BackColor = RGB(245, 148, 146) ' Reddish color
         CalculatorFOVSTarget.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data missing)"
+'        CalculatorFOVSTarget.txt_N_FOVS.Text = ""
         
     ElseIf FOVSMarkerChosen And Not InputEmptyAny Then ' For FOVS Target method
         CalculatorFOVSMarker.CommandButton_CountingEffort.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSMarker.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data ready)"
+        
+        If X <> 0 Then
+            CalculatorFOVSMarker.txt_X_FOVS.Text = Format(X, "0")
+        Else
+        End If
+        
     ElseIf FOVSMarkerChosen And InputEmptyAny Then
         CalculatorFOVSMarker.CommandButton_CountingEffort.BackColor = RGB(245, 148, 146) ' Reddish color
         CalculatorFOVSMarker.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data missing)"
+'        CalculatorFOVSMarker.txt_X_FOVS.Text = ""
     Else
     End If
     
@@ -419,33 +458,23 @@ End Sub
 ' Avoid pasting words and numbers.
 
 Private Sub txt_X_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_N_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_N3c_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_TimeFOV_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub txt_TimeTotal_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
-    If Shift = 2 And (KeyCode = 86) Then ' Disable Ctrl+V (paste)
-        KeyCode = 0
-    End If
+    AvoidCopyPaste KeyCode, Shift
 End Sub
 
 Private Sub CommandButtonTimer_Click()
@@ -513,8 +542,9 @@ End Sub
             Unload Me
         End If
         
-        ' X
         If Not ClearedAllData Then
+        
+            ' X
             If Not UnsavedWarningGiven Then
                 If IsNumeric(txt_X.Value) And txt_X.Value <> X Then
                     If CloseMode = 0 Then
@@ -607,9 +637,10 @@ End Sub
                     End If
                 End If
             End If
+        Unload Me
         End If
     
-    ClearedAllData = False
+'    ClearedAllData = False
     
     End Sub
 
