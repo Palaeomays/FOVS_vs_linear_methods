@@ -2,13 +2,13 @@
 This ReadMe file was generated on 2025-02-03 by Marcos Amores
 
 ## General information
-
-### 1. Title:
    
-  Absolute abundance calculator (v1.1.1)
+  The following has been developed for the manuscript "Field-of-view subsampling: A novel ‘exotic marker’ method for absolute abundances, validated by simulation and microfossil case studies".
 
-### 2. Leading/corresponding author:
-   
+  The manuscript is presently under review; a preprint of the article is available [here](http://www.doi.org/10.48550/arXiv.2406.10921)
+  
+### Corresponding author and affiliation:
+
   Name: Chris Mays
 
   Institution: Department of Geology & Palaeontology, Natural History Museum Vienna
@@ -17,20 +17,29 @@ This ReadMe file was generated on 2025-02-03 by Marcos Amores
   
   Email: chris.mays@nhm.at
 
-### 3. Date of present version:
+
+
+
+## Absolute abundance calculator
+
+### Latest version:
+
+  v1.1.1
+
+
+### Date of present version:
    
   2025-02-03
 
 
-## Sharing/Access Information
-
-### 1. Licenses/restrictions placed on the code:
+### Licenses/restrictions placed on the code:
    
   Absolute abundance calculator © 2025 by Chris Mays, Marcos Amores, and Anthony Mays. Licensed under Creative Commons Attribution-ShareAlike 4.0 International
 
-## Troubleshooting
 
-### If you see the warning message: "Microsoft has blocked macros from running because the source of this file is untrusted."
+### Troubleshooting
+
+If you see the warning message: "Microsoft has blocked macros from running because the source of this file is untrusted."
 
   You can unblock macros by modifying the properties of the file as follows:
 
@@ -48,29 +57,31 @@ This ReadMe file was generated on 2025-02-03 by Marcos Amores
 
 
 
-# Matlab code for simulations --- Quick Start Guide
+## Matlab code for simulations 
 
-Get Matlab ready:
-* Download the Matlab files to your working directory.
-* Make a \SimData\ subdirectory in your working directory.
-* Note that Matlab must have the Statistics and Machine Learning Toolbox installed (which is required to perform the t-tests).
-   + If you run the code without this Toolbox installed, then you will receive an error. There should be a link in the error message that will install the Toolbox for you (depending on your Matlab distribution and licence).
+### Quick Start Guide
 
-To generate the data for:
-* For Tables S4--S14 and Fig S1, use the file BigFossilSimsV3.m by typing
-```
+  Get Matlab ready:
+  * Download the Matlab files to your working directory.
+  * Make a \SimData\ subdirectory in your working directory.
+  * Note that Matlab must have the Statistics and Machine Learning Toolbox installed (which is required to perform the t-tests).
+     + If you run the code without this Toolbox installed, then you will receive an error. There should be a link in the error message that will install the Toolbox for you (depending on your Matlab distribution and licence).
+
+  To generate the data for:
+  * For Tables S4--S14 and Fig S1, use the file BigFossilSimsV3.m by typing
+  ```
 	>> BigFossilSimsV3
-```
-  on the Matlab command line and hit Enter.
-* For Fig 3, use the file SimStatsChecker.m by typing
-```
+  ```
+    on the Matlab command line and hit Enter.
+  * For Fig 3, use the file SimStatsChecker.m by typing
+  ```
 	>> SimStatsChecker(30000,1000,700,15,100000,1)
-```
-   on the Matlab command line and hit Enter.
-* For Fig 6, use the file PrecWRTWorkV3.m by typing
-```
+  ```
+    on the Matlab command line and hit Enter.
+  * For Fig 6, use the file PrecWRTWorkV3.m by typing
+  ```
 	>> PrecWRTWorkV3
-```
-   on the Matlab command line and hit Enter.
+  ```
+    on the Matlab command line and hit Enter.
 
-Note that some of these files will take many hours (even days) to run. If you wish to run shorter versions, change the "its" parameter (i.e., iterations) to a smaller number. You can generate new simulations with different parameters using the more detailed instructions contained in "Supporting information file 2".
+  * Note that some of these files will take many hours (even days) to run. If you wish to run shorter versions, change the "its" parameter (i.e., iterations) to a smaller number. You can generate new simulations with different parameters using the more detailed instructions contained in "Supporting information file 2".
