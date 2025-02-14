@@ -1,11 +1,11 @@
 # FOVS_vs_linear_methods
-This ReadMe file was generated on 2025-02-03 by Marcos Amores
+This ReadMe file was generated on 2025-02-03 by Marcos Amores.
 
 ## General information
    
   The following has been developed for the manuscript "Field-of-view subsampling: A novel ‘exotic marker’ method for absolute abundances, validated by simulation and microfossil case studies".
 
-  The manuscript is presently under review; a preprint of the article is available [here](http://www.doi.org/10.48550/arXiv.2406.10921)
+  The manuscript is presently under review; a preprint of the article is available [here](http://www.doi.org/10.48550/arXiv.2406.10921).
   
 ### Corresponding author and affiliation:
 
