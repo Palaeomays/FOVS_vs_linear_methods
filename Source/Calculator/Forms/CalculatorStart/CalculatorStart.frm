@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorStart 
-   Caption         =   "Absolute abundance calculator v1.1.1"
+   Caption         =   "Absolute abundance calculator v1.1.2"
    ClientHeight    =   7095
    ClientLeft      =   120
    ClientTop       =   465
@@ -37,6 +37,48 @@ Private Sub UserForm_Initialize()
         MsgBox "This calculator will assist in:" & vbNewLine & vbNewLine & "1) determining which method is most efficient for estimating absolute abundances in your population;" & vbNewLine & "2) estimating the absolute abundances of your specimens (and their associated precisions); and" & vbNewLine & "3) predicting the amount of effort required for a given precision." & vbNewLine & vbNewLine & "The next screen will ask for preliminary count data to determine the most efficient method. For this, please have a timer on hand, or use the provided timer before commencing counting. Approximately 10 fields of view are sufficient for most populations." & vbNewLine & vbNewLine & "Alternatively, you may wish to skip this step by selecting either the 'Linear' or 'FOVS' buttons." & vbNewLine & vbNewLine & "For more details on the terms used, the formulae and when to use these methods, see the original manuscript (https://doi.org/10.XXXXXX).", vbInformation
     Else
     End If
+
+    ' Populate inputs with previous values if these exist. Sets the value of the textbox to the value of the public variable.
+        ' X
+        
+        If X <> Empty Then
+            txt_X.Text = X
+        Else
+            txt_X.Text = ""
+        End If
+        
+        ' N
+        
+        If N <> Empty Then
+            txt_N.Text = N
+        Else
+            txt_N.Text = ""
+        End If
+        
+        ' N3C
+        
+        If N3C <> Empty Then
+            txt_N3c.Text = N3C
+        Else
+            txt_N3c.Text = ""
+        End If
+        
+        ' TimeFOV
+        
+        If TimeFOV <> Empty Then
+            txt_TimeFOV.Text = TimeFOV
+        Else
+            txt_TimeFOV.Text = ""
+        End If
+        
+        ' TimeTotal
+        
+        If TimeTotal <> Empty Then
+            txt_TimeTotal.Text = TimeTotal
+        Else
+            txt_TimeTotal.Text = ""
+        End If
+ 
 End Sub
     
     
@@ -192,7 +234,7 @@ End Sub
             
             'Routine to check if TimePerSpecimen is greater than 0. If so, stops futher calculations to avoid a division by zero in the next step.
             If Not TimePerSpecimen > 0 Then
-                MsgBox "The time it takes to count specimens must be greater than 0.", vbExclamation
+                MsgBox "The time it takes to count specimens and field of view transitions must be greater than 0.", vbExclamation
                 Exit Sub
             End If
                 
@@ -344,6 +386,10 @@ End Sub
     
     Private Sub CommandButtonLinear_Click()
         LinearChosen = True ' Add flag to memory for any potential checks in future steps.
+        TargetSuggested = False
+        FOVSTargetChosen = False
+        MarkerSuggested = False
+        FOVSMarkerChosen = False
         
         ' Store inputs in case these exist but calculation was not run.
         
@@ -382,21 +428,23 @@ End Sub
         Else
         End If
         
-        response = MsgBox("The linear method is most efficient if preliminary data about the sample and the markers are entered. From these, the optimal amount of sampling effort can be calculated." & vbNewLine & vbNewLine & "Would you like to include preliminary data?", vbQuestion + vbYesNo + vbDefaultButton2, "Preliminary Data")
-
-        ' Check response.
-        If response = vbYes Then
-            PreliminaryData.Show
-        Else
+'        response = MsgBox("The linear method is most efficient if preliminary data about the sample and the markers are entered. From these, the optimal amount of sampling effort can be calculated." & vbNewLine & vbNewLine & "Would you like to include preliminary data?", vbQuestion + vbYesNo + vbDefaultButton2, "Preliminary Data")
+'
+'        ' Check response.
+'        If response = vbYes Then
+'            PreliminaryData.Show
+'        Else
             CalculatorLinear.Show
-        End If
-        
+'        End If
+'
         Hide
     End Sub
     
     'FOVS method button.
     
     Private Sub CommandButtonFOVS_Click()
+        LinearChosen = False
+        
         If Not (TargetSuggested Or MarkerSuggested) And (txt_X.Value = "" Or txt_N.Value = "") Then
             response = MsgBox("Do targets appear to be more common than markers?", vbQuestion + vbYesNo, "Most common specimens?")
             ' Check user response

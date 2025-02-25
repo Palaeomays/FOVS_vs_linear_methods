@@ -91,7 +91,7 @@ Private Sub UserForm_Initialize()
     End If
     
     If OriginStarter Or OriginLinear Or OriginFOVSTarget Or OriginFOVSMarker Or OriginCountingEffort Or OriginCalibrationFOV Then
-        MsgBox "The counting assistant is designed to enable up to nine target and one marker specimen categories to be counted concurrently." & vbNewLine & vbNewLine & "First: label the specimen categories you wish to count." & vbNewLine & "Second: perform a count of the first field of view." & vbNewLine & "Third: Press the 'next FOV' button when you transition to a new field of view." & vbNewLine & vbNewLine & "The hotkeys enable the rapid counting of multiple specimen categories using the 0–9 keys on a keyboard or numpad." & vbNewLine & vbNewLine & "The optional timer enables the automatic calculation of data collection effort and the determination of the most efficient count method." & vbNewLine & vbNewLine & "IMPORTANT: for valid statistics, please ensure that you include all specimen categories before counting.", vbInformation
+        MsgBox "The counting assistant is designed for counting up to 10 concurrent specimen categories (e.g., one marker and nine targets)." & vbNewLine & vbNewLine & "First: label the specimen categories you wish to count." & vbNewLine & "Second: perform a count of the first field of view (FOV)." & vbNewLine & "Third: Press the 'next FOV' button when you transition to a new field of view." & vbNewLine & vbNewLine & "The hotkeys enable the rapid counting of multiple specimen categories using the 0–9 keys on a keyboard or numpad." & vbNewLine & vbNewLine & "The optional timer enables the automatic calculation of data collection effort and the determination of the most efficient count method." & vbNewLine & vbNewLine & "IMPORTANT: for valid statistics, please ensure that you include all specimen categories before counting.", vbInformation
     
         ' Check if certain sheets are present. Iterate through all worksheets in the workbook.
         
@@ -939,6 +939,12 @@ End Sub
 '
 
 Private Sub CommandButton_Next_Click()
+    ' Check if Sample Name is added first.
+    If txt_SampleName.Text = "" Then
+        MsgBox "Please enter the sample name first", vbExclamation, "Input Required"
+        txt_SampleName.SetFocus
+        Exit Sub
+    End If
   
     If Len(txt_Name1.Value) > 0 And Not IsNumeric(txt_Now1.Value) Then ' Validate input field to see if not empty, if not, then ask for count number.
         MsgBox "Please enter the amount of counted specimens in #1.", vbExclamation, "Input Required"
@@ -1072,7 +1078,7 @@ Private Sub CommandButton_Next_Click()
 
     ' If the sheet doesn't exist, create a new one
     If Not SavedVariablesCountingRunningExists Then
-        Set SavedVariablesCountingRunning = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets("Calculator"))
+        Set SavedVariablesCountingRunning = ThisWorkbook.Worksheets.Add(after:=ThisWorkbook.Worksheets("Calculator"))
         SavedVariablesCountingRunning.Name = "Counting (Exhaustive)"
     End If
 
@@ -1216,7 +1222,7 @@ Private Sub CommandButton_Next_Click()
 
     ' If the sheet doesn't exist, create a new one
     If Not SavedVariablesCountingEndExists Then
-        Set SavedVariablesCountingEnd = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets("Counting (Exhaustive)"))
+        Set SavedVariablesCountingEnd = ThisWorkbook.Worksheets.Add(after:=ThisWorkbook.Worksheets("Counting (Exhaustive)"))
         SavedVariablesCountingEnd.Name = "Counting (Summary)"
     End If
 
@@ -1615,6 +1621,13 @@ Private Sub CommandButton_Save_Click()
         If TimerRunning Then
         CommandButton_Timer_Click
         TimerRunning = False
+        End If
+        
+    ' Check if Sample Name is added first.
+        If txt_SampleName.Text = "" Then
+            MsgBox "Please enter the sample name first", vbExclamation, "Input Required"
+            txt_SampleName.SetFocus
+            Exit Sub
         End If
         
         X = Worksheets("Counting (Summary)").Range("AR2").Value

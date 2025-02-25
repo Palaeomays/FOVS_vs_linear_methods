@@ -271,7 +271,7 @@ End Sub
             InputEmptyS1 = False
         ElseIf txt_N1.Value = 1 Then
             s1 = Sqr(Y1)
-            txt_s1.Value = s1
+            txt_s1.Value = Round(s1, 3)
             txt_s1.Enabled = True
             txt_s1.BackColor = RGB(255, 255, 255) ' White colour.
             InputEmptyS1 = False
@@ -317,7 +317,7 @@ End Sub
             InputEmptyS2 = False
         ElseIf txt_N2.Value = 1 Then
             s2 = Sqr(Y2)
-            txt_s2.Value = s2
+            txt_s2.Value = Round(s2, 3)
             txt_s2.Enabled = True
             txt_s2.BackColor = RGB(255, 255, 255) ' White colour.
             InputEmptyS2 = False

@@ -1,8 +1,46 @@
 Attribute VB_Name = "Changelog"
 '#####
+'# 1.1.2
+'#
+'# 2025-02-25
+'#####
+
+'# GUI
+'- Preliminary data now fills up if user returns back to it. Same for the Method Determination.
+'- Preliminary screen now updates accordingly if it was arrived via Linear or FOVS buttons and redirects accordingly.
+'- X and N values are now filled up automatically in the "Optional: Optimisation data" if these are stored in memory.
+'- Modified button that changes between marker/target mode in FOVS to open up the Method Determination screen instead.
+'- Glossary font size is now the same as other nearby buttons.
+'- N and N3E is now greyed out in FOVS screen, with user needing to do a FOV calibration first. Once the "FOV calibration count" goes green these become enabled.
+'- Output boxes for xline and nline now correctly turn white and selectable if there is a value present.
+'- X and N values in FOVS screens are no longer automatically filled if these are given in the "Optimisation data" screen.
+'- X and N values given in "Optimisation data" screen now automatically fill Linear method screen.
+'- Nstar3E and Nstar3C now round out to the nearest integer.
+
+'# Calculations
+'- Fixed wrong value issues with Nstar3C and Nstar3E. For the first a division was required instead of a multiplication, and for the second the wrong variable was present (N1 instead of s1).
+'- Linear method now does not ask for preliminary data.
+'- Linear method screen no longer requires all inputs to be filled out before running calculations.
+'- Level of error is no longer expressly required to run calculations and show outputs that make no use of it.
+'- s3 and unit of measurement are now rounded off to 3 decimal places if automatically determined.
+
+'# Code
+'- "Optimisation data" screen now considers if targets or markers are more common and prompts the user to change the method.
+'- Counting Assistant now requires sample name to be inserted first. User is prompted of this when pressing "Next FOV" or "End and export to spreadsheet".
+
+'# Text
+'- Added back the "Optional" in "Optional: Optimisation data" present in the FOVS forms.
+'- The pop-up screen in case counting time is 0 is now "The time it takes to count specimens and field of view transitions must be greater than 0."
+'- Changed hover text of FOVS screen X and N to "Number of target/marker specimens from extrapolation counts".
+'- Changed Counting Assistant introductory first paragraph to "The counting assistant is designed for counting up to 10 concurrent specimen categories (e.g., one marker and nine targets.)"
+'- Added "(FOV)" after "Second: perform a count of the first field of view."
+'- Added sentence at end of Hotkey note saying "FOV = Field of view".
+'- Changed default text for "Target 1 (x1)" to "Target 1 (x #1).
+
+'#####
 '# 1.1.1
 '#
-'# 2025-01-XX
+'# 2025-01-03
 '#####
 
 '# Features

@@ -31,6 +31,18 @@ End Sub
 Private Sub UserForm_Initialize()
     UnsavedWarningGiven = False
     
+    If X <> Empty Then
+        txt_X.Text = X
+    Else
+        txt_X.Text = ""
+    End If
+    
+    If N <> Empty Then
+        txt_N.Text = N
+    Else
+        txt_N.Text = ""
+    End If
+       
     If FOVSTargetChosen Then
         If N = 0 Then
             txt_N.Text = CalculatorFOVSTarget.txt_N_FOVS.Text
@@ -52,18 +64,6 @@ Private Sub UserForm_Initialize()
             txt_N.Text = N
         End If
     End If
-        
-'    If X <> 0 Then
-'        txt_X.Text = X
-'    Else
-'        txt_X.Text = ""
-'    End If
-    
-'    If N <> 0 Then
-'        txt_N.Text = N
-'    Else
-'        txt_N.Text = ""
-'    End If
 
     If N3C <> 0 Then
         txt_N3c.Text = N3C
@@ -262,6 +262,36 @@ Private Sub CommandButtonSave_Click()
     MsgBox "Variables successfully saved.", vbInformation
     
     'Background check to see if the best method has changed following calibration.
+    
+    If FOVSTargetChosen And MarkerSuggested Then
+        response = MsgBox("Warning: To enhance data collection efficiency based on your target-to-marker ratio (u-hat), consider focusing calibration counts on markers. Would you like to make this change?", vbQuestion + vbYesNo, "Most common specimens?")
+            
+        ' Check user response
+        If response = vbYes Then
+            FOVSTargetChosen = False
+            FOVSMarkerChosen = True
+            CalculatorFOVSMarker.Show ' FOVS calculator with equations that consider markers [n] being more common than targets [x].
+            CalculatorFOVSTarget.Hide
+            Hide
+        Else
+            'Do nothing, but show option to switch as a button.
+        End If
+    ElseIf FOVSMarkerChosen And TargetSuggested Then
+        response = MsgBox("Warning: To enhance data collection efficiency based on your target-to-marker ratio (u-hat), consider focusing calibration counts on targets. Would you like to make this change?", vbQuestion + vbYesNo, "Most common specimens?")
+            
+        ' Check user response
+        If response = vbYes Then
+            FOVSMarkerChosen = False
+            FOVSTargetChosen = True
+            CalculatorFOVSTarget.Show ' FOVS calculator with equations that consider markers [n] being more common than targets [x].
+            CalculatorFOVSMarker.Hide
+            Hide
+        Else
+            'Do nothing, but show option to switch as a button.
+        End If
+    Else
+    End If
+    
     'Commented out for now after discussion with Chris Mays.
     
 '    If LinearSuggested And Not LinearChosen Then
@@ -301,32 +331,51 @@ Private Sub CommandButtonSave_Click()
     If LinearChosen And Not InputEmptyAny Then ' For Linear method
         CalculatorLinear.CommandButton_CountingEffort.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorLinear.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data ready)"
+        
+        If X <> 0 Then
+            CalculatorLinear.txt_X.Text = Format(X, "0")
+        Else
+        End If
+        
+        If N <> 0 Then
+            CalculatorLinear.txt_N.Text = Format(N, "0")
+        Else
+        End If
     ElseIf LinearChosen And InputEmptyAny Then
         CalculatorLinear.CommandButton_CountingEffort.BackColor = RGB(245, 148, 146) ' Reddish color
         CalculatorLinear.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data missing)"
+        
+        If X <> 0 Then
+            CalculatorLinear.txt_X.Text = Format(X, "0")
+        Else
+        End If
+        
+        If N <> 0 Then
+            CalculatorLinear.txt_N.Text = Format(N, "0")
+        Else
+        End If
         
     ElseIf FOVSTargetChosen And Not InputEmptyAny Then ' For FOVS Target method
         CalculatorFOVSTarget.CommandButton_CountingEffort.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSTarget.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data ready)"
         
-        If N <> 0 Then
-            CalculatorFOVSTarget.txt_N_FOVS.Text = Format(N, "0")
-        Else
-        End If
+'        If N <> 0 Then
+'            CalculatorFOVSTarget.txt_N_FOVS.Text = Format(N, "0")
+'        Else
+'        End If
         
     ElseIf FOVSTargetChosen And InputEmptyAny Then
         CalculatorFOVSTarget.CommandButton_CountingEffort.BackColor = RGB(245, 148, 146) ' Reddish color
         CalculatorFOVSTarget.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data missing)"
-'        CalculatorFOVSTarget.txt_N_FOVS.Text = ""
         
     ElseIf FOVSMarkerChosen And Not InputEmptyAny Then ' For FOVS Target method
         CalculatorFOVSMarker.CommandButton_CountingEffort.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSMarker.CommandButton_CountingEffort.Caption = "Optional: Optimisation data" & vbCrLf & "(data ready)"
         
-        If X <> 0 Then
-            CalculatorFOVSMarker.txt_X_FOVS.Text = Format(X, "0")
-        Else
-        End If
+'        If X <> 0 Then
+'            CalculatorFOVSMarker.txt_X_FOVS.Text = Format(X, "0")
+'        Else
+'        End If
         
     ElseIf FOVSMarkerChosen And InputEmptyAny Then
         CalculatorFOVSMarker.CommandButton_CountingEffort.BackColor = RGB(245, 148, 146) ' Reddish color

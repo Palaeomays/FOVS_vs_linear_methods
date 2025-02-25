@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorLinear 
-   Caption         =   "Absolute abundance calculator v1.1.1 - Linear method"
+   Caption         =   "Absolute abundance calculator v1.1.2 - Linear method"
    ClientHeight    =   5415
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   11895
+   ClientWidth     =   12015
    OleObjectBlob   =   "CalculatorLinear.frx":0000
    ShowModal       =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -269,27 +269,6 @@ End Sub
 '
 
 Private Sub CommandButton_Calculate_Linear_Click()
-    ' Validate other input fields to see if not empty.
-    If Not IsNumeric(txt_X.Value) Then
-        MsgBox "Please enter the number of targets counted [x].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-    
-    If Not IsNumeric(txt_N.Value) Then
-        MsgBox "Please enter the number of markers counted [n].", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-    
-    If Not IsNumeric(txt_ConfidenceInterval.Value) Then
-        MsgBox "Please enter the desired confidence interval as a percentage (e.g., 95).", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-
-    If Not IsNumeric(txt_LevelError.Value) Then
-        MsgBox "Please enter the desired target level of error as a percentage (e.g., 10).", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-    
     If Not SavedMarkerDetails Then
         MsgBox "Please enter marker characteristics.", vbExclamation, "Input Required"
         LinearChosen = True
@@ -303,53 +282,50 @@ Private Sub CommandButton_Calculate_Linear_Click()
     Else
     End If
     
-    X = CLng(txt_X.Value)
-    N = CLng(txt_N.Value)
-    ConfidenceInterval = CDbl(txt_ConfidenceInterval.Value)
-    LevelError = CDbl(txt_LevelError.Value) 'TODO Can lead to negatives later on if less than 5.
-    
     InputsSaved = True
 
     ' Avoid zeros in counts
+    If Not IsNumeric(txt_X.Value) Then
+        MsgBox "Please enter the number of targets counted [x].", vbExclamation, "Input Required"
+        Exit Sub
+    End If
+    
+    X = CLng(txt_X.Value)
+    
     If X <= 0 Then
         MsgBox "Number of targets needs to be higher than 0.", vbExclamation
         Exit Sub
     End If
+    
+    If Not IsNumeric(txt_N.Value) Then
+        MsgBox "Please enter the number of markers counted [n].", vbExclamation, "Input Required"
+        Exit Sub
+    End If
+    
+    N = CLng(txt_N.Value)
     
     If N <= 0 Then
         MsgBox "Number of markers needs to be higher than 0.", vbExclamation
         Exit Sub
     End If
     
-    ' Avoid inversion of values for confidence intervals lower than 25 and infinity by values equal or higher than 100.
-    
-    If ConfidenceInterval < 25 Then
-        MsgBox "Please insert a confidence interval higher than 25.", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-    
-    If ConfidenceInterval >= 100 Then
-        MsgBox "Please insert a confidence interval equal or lower than 100.", vbExclamation, "Input Required"
-        Exit Sub
-    End If
-
     ' Perform background calculations
     Dim Vline As Double ' Total mass or volume of samples
     Vline = N2 * Y2
     
     uhat = X / N
     
+    LabelResult_uhat_Linear.Text = Format(uhat, "0.000")
+    
+    If IsNumeric(LabelResult_uhat_Linear.Value) Then
+        LabelResult_uhat_Linear.Enabled = True
+        LabelResult_uhat_Linear.BackColor = RGB(255, 255, 255)
+    Else
+        LabelResult_uhat_Linear.BackColor = RGB(224, 224, 224)
+    End If
+    
     Dim mline As Double ' Estimated number of exotic markers added to the sample
     mline = N1 * Y1
-    
-    Dim ConfidenceInterval_Percentile As Double ' MAYS
-    ConfidenceInterval_Percentile = (Sqr(ConfidenceInterval) / 10)
-    
-    Dim CL As Double ' MAYS
-    CL = Round(ConfidenceInterval_Percentile, 3)
-    
-    Dim Zscore As Double ' Distance in standard deviations of an observed value from the mean.
-    Zscore = WorksheetFunction.NormInv(CL, 0, 1)
 
     Dim uhat_max As Double ' MAYS
     uhat_max = (uhat + (1 / (2 * N)) + Sqr(uhat * (1 + uhat) / N + (1 / (4 * N * N)))) / (1 - (1 / N))
@@ -380,57 +356,14 @@ Private Sub CommandButton_Calculate_Linear_Click()
     
     Dim s_log_mv As Double ' MAYS
     s_log_mv = (Application.WorksheetFunction.Log(CDbl(MV_max)) - Application.WorksheetFunction.Log(CDbl(MV_min))) / 2
-    
-    Dim logF As Double '
-    logF = Zscore * Sqr((s_log_uhat * s_log_uhat) + (s_log_mv * s_log_mv))
-    
-    Dim F As Double ' MAYS
-    F = 10 ^ logF
        
     ' Perform visible calculations
     Dim c As Double ' Mean number of target specimens per unit mass or volume
     c = (X * Y1 * N1) / (N * Vline)
     
-    Dim sigma_L As Double ' Total concentration standard error for linear method
-    sigma_L = 100 * (Sqr((((s1 / Y1) / (Sqr(N1))) ^ 2) + ((Sqr(X) / X) ^ 2) + ((Sqr(N) / N) ^ 2)))
-    
-    Dim CI_max As Double ' Predicted maximum concentation of targets
-    CI_max = uhat * mline * F / Vline
-    
-    Dim CI_min As Double ' Predicted minimum concentation of targets
-    CI_min = uhat * mline / (Vline * F)
-    
-    If FOVTransitionEffort <> 0 Then
-        eL = ((FOVTransitionEffort * (X / Y3x)) + X + N)
-    Else
-        ' FOVTransitionEffort is equal to 0, do not run calculation
-    End If
-    
-    If FOVTransitionEffort <> 0 Then
-        eL_sigmabar = (FOVTransitionEffort * (1 + uhat) + (Y3x * (2 + uhat)) + Y3x / uhat) / (Y3x * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
-    Else
-        ' FOVTransitionEffort is equal to 0, do not run calculation
-    End If
-    
-    ' Display calculated results
     LabelResult_Concentration_Linear = Format(c, "0")
     txt_ConcentrationUnits = SizeUnit
     
-    LabelResult_ConcentrationStandardError_Linear.Text = Format(sigma_L, "0.00")
-    
-    LabelResult_ConcentrationMax_Linear.Text = Format(CI_max, "0")
-    txt_CImaxUnits = SizeUnit
-    
-    LabelResult_ConcentrationMin_Linear.Text = Format(CI_min, "0")
-    txt_CIminUnits = SizeUnit
-    
-    LabelResult_uhat_Linear.Text = Format(uhat, "0.000")
-    
-    LabelResult_CollectionEffort_Linear.Text = Format(eL, "0")
-    
-    LabelResult_PredictedCollectionEffort_Linear.Text = Format(eL_sigmabar, "0") 'TODO If on estimating effort targets are more common than markers, and then markets are shown to be greater than targets in the actual count, predicted time is lower than actual ti
-    
-    'Enable and colour output backgrounds to white
     If IsNumeric(LabelResult_Concentration_Linear.Value) Then
         LabelResult_Concentration_Linear.Enabled = True
         LabelResult_Concentration_Linear.BackColor = RGB(255, 255, 255)
@@ -445,12 +378,101 @@ Private Sub CommandButton_Calculate_Linear_Click()
         txt_ConcentrationUnits.BackColor = RGB(224, 224, 224)
     End If
     
+    Dim sigma_L As Double ' Total concentration standard error for linear method
+    sigma_L = 100 * (Sqr((((s1 / Y1) / (Sqr(N1))) ^ 2) + ((Sqr(X) / X) ^ 2) + ((Sqr(N) / N) ^ 2)))
+    
+    LabelResult_ConcentrationStandardError_Linear.Text = Format(sigma_L, "0.00")
+    
     If IsNumeric(LabelResult_ConcentrationStandardError_Linear.Value) Then
         LabelResult_ConcentrationStandardError_Linear.Enabled = True
         LabelResult_ConcentrationStandardError_Linear.BackColor = RGB(255, 255, 255)
     Else
         LabelResult_ConcentrationStandardError_Linear.BackColor = RGB(224, 224, 224)
     End If
+    
+    If FOVTransitionEffort <> 0 Then
+        eL = ((FOVTransitionEffort * (X / Y3x)) + X + N)
+        
+        LabelResult_CollectionEffort_Linear.Text = Format(eL, "0")
+        
+        If IsNumeric(LabelResult_CollectionEffort_Linear.Value) And FOVTransitionEffort <> 0 Then
+            LabelResult_CollectionEffort_Linear.Enabled = True
+            LabelResult_CollectionEffort_Linear.BackColor = RGB(255, 255, 255)
+        ElseIf IsNumeric(LabelResult_CollectionEffort_Linear.Value) And FOVTransitionEffort = 0 Then
+            ' FOVTransitionEffort is equal to 0, do not show
+            LabelResult_CollectionEffort_Linear.Text = ""
+        Else
+            LabelResult_PredictedCollectionEffort_Linear.BackColor = RGB(224, 224, 224)
+        End If
+    Else
+        ' FOVTransitionEffort is equal to 0, do not run calculation
+    End If
+    
+    If Not IsNumeric(txt_LevelError.Value) Then
+        MsgBox "Please enter the desired target level of error as a percentage (e.g., 10).", vbExclamation, "Input Required"
+        Exit Sub
+    End If
+    
+    LevelError = CDbl(txt_LevelError.Value) 'TODO Can lead to negatives later on if less than 5.
+    
+    If FOVTransitionEffort <> 0 Then
+        eL_sigmabar = (FOVTransitionEffort * (1 + uhat) + (Y3x * (2 + uhat)) + Y3x / uhat) / (Y3x * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
+    
+        LabelResult_PredictedCollectionEffort_Linear.Text = Format(eL_sigmabar, "0") 'TODO If on estimating effort targets are more common than markers, and then markets are shown to be greater than targets in the actual count, predicted time is lower than actual time.
+    
+        If IsNumeric(LabelResult_PredictedCollectionEffort_Linear.Value) And FOVTransitionEffort <> 0 Then
+            LabelResult_PredictedCollectionEffort_Linear.Enabled = True
+            LabelResult_PredictedCollectionEffort_Linear.BackColor = RGB(255, 255, 255)
+        ElseIf IsNumeric(LabelResult_PredictedCollectionEffort_Linear.Value) And FOVTransitionEffort = 0 Then
+            LabelResult_PredictedCollectionEffort_Linear.Text = ""
+            ' FOVTransitionEffort is equal to 0, do not show
+        Else
+            LabelResult_PredictedCollectionEffort_Linear.BackColor = RGB(224, 224, 224)
+        End If
+    
+    Else
+        ' FOVTransitionEffort is equal to 0, do not run calculation
+    End If
+    
+    If Not IsNumeric(txt_ConfidenceInterval.Value) Then
+        MsgBox "Please enter the desired confidence interval as a percentage (e.g., 95).", vbExclamation, "Input Required"
+        Exit Sub
+    End If
+    
+    ConfidenceInterval = CDbl(txt_ConfidenceInterval.Value)
+    
+    ' Avoid inversion of values for confidence intervals lower than 25 and infinity by values equal or higher than 100.
+    
+    If ConfidenceInterval < 25 Then
+        MsgBox "Please insert a confidence interval higher than 25.", vbExclamation, "Input Required"
+        Exit Sub
+    End If
+    
+    If ConfidenceInterval >= 100 Then
+        MsgBox "Please insert a confidence interval equal or lower than 100.", vbExclamation, "Input Required"
+        Exit Sub
+    End If
+    
+    Dim ConfidenceInterval_Percentile As Double ' MAYS
+    ConfidenceInterval_Percentile = (Sqr(ConfidenceInterval) / 10)
+    
+    Dim CL As Double ' MAYS
+    CL = Round(ConfidenceInterval_Percentile, 3)
+    
+    Dim Zscore As Double ' Distance in standard deviations of an observed value from the mean.
+    Zscore = WorksheetFunction.NormInv(CL, 0, 1)
+    
+    Dim logF As Double '
+    logF = Zscore * Sqr((s_log_uhat * s_log_uhat) + (s_log_mv * s_log_mv))
+    
+    Dim F As Double ' MAYS
+    F = 10 ^ logF
+    
+    Dim CI_max As Double ' Predicted maximum concentation of targets
+    CI_max = uhat * mline * F / Vline
+    
+    LabelResult_ConcentrationMax_Linear.Text = Format(CI_max, "0")
+    txt_CImaxUnits = SizeUnit
     
     If IsNumeric(LabelResult_ConcentrationMax_Linear.Value) Then
         LabelResult_ConcentrationMax_Linear.Enabled = True
@@ -466,6 +488,12 @@ Private Sub CommandButton_Calculate_Linear_Click()
         txt_CImaxUnits.BackColor = RGB(224, 224, 224)
     End If
     
+    Dim CI_min As Double ' Predicted minimum concentation of targets
+    CI_min = uhat * mline / (Vline * F)
+    
+    LabelResult_ConcentrationMin_Linear.Text = Format(CI_min, "0")
+    txt_CIminUnits = SizeUnit
+    
     If IsNumeric(LabelResult_ConcentrationMin_Linear.Value) Then
         LabelResult_ConcentrationMin_Linear.Enabled = True
         LabelResult_ConcentrationMin_Linear.BackColor = RGB(255, 255, 255)
@@ -478,33 +506,6 @@ Private Sub CommandButton_Calculate_Linear_Click()
         txt_CIminUnits.BackColor = RGB(255, 255, 255)
     Else
         txt_CIminUnits.BackColor = RGB(224, 224, 224)
-    End If
-    
-    If IsNumeric(LabelResult_uhat_Linear.Value) Then
-        LabelResult_uhat_Linear.Enabled = True
-        LabelResult_uhat_Linear.BackColor = RGB(255, 255, 255)
-    Else
-        LabelResult_uhat_Linear.BackColor = RGB(224, 224, 224)
-    End If
-
-    If IsNumeric(LabelResult_CollectionEffort_Linear.Value) And FOVTransitionEffort <> 0 Then
-        LabelResult_CollectionEffort_Linear.Enabled = True
-        LabelResult_CollectionEffort_Linear.BackColor = RGB(255, 255, 255)
-    ElseIf IsNumeric(LabelResult_CollectionEffort_Linear.Value) And FOVTransitionEffort = 0 Then
-        ' FOVTransitionEffort is equal to 0, do not show
-        LabelResult_CollectionEffort_Linear.Text = ""
-    Else
-        LabelResult_PredictedCollectionEffort_Linear.BackColor = RGB(224, 224, 224)
-    End If
-
-    If IsNumeric(LabelResult_PredictedCollectionEffort_Linear.Value) And FOVTransitionEffort <> 0 Then
-        LabelResult_PredictedCollectionEffort_Linear.Enabled = True
-        LabelResult_PredictedCollectionEffort_Linear.BackColor = RGB(255, 255, 255)
-    ElseIf IsNumeric(LabelResult_PredictedCollectionEffort_Linear.Value) And FOVTransitionEffort = 0 Then
-        LabelResult_PredictedCollectionEffort_Linear.Text = ""
-        ' FOVTransitionEffort is equal to 0, do not show
-    Else
-        LabelResult_PredictedCollectionEffort_Linear.BackColor = RGB(224, 224, 224)
     End If
     
     OutputsSaved = True
@@ -567,7 +568,7 @@ Private Sub CommandButton_SaveVariables_Linear_Click()
 
     ' If the sheet doesn't exist, create a new one
     If Not SavedVariablesLinearExists Then
-        Set SavedVariablesLinear = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets("Calculator"))
+        Set SavedVariablesLinear = ThisWorkbook.Worksheets.Add(after:=ThisWorkbook.Worksheets("Calculator"))
         SavedVariablesLinear.Name = "Saved Variables (Linear)"
         AddHeadersLinear SavedVariablesLinear
         

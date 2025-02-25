@@ -1,12 +1,12 @@
 Attribute VB_Name = "ReadMe"
-' This ReadMe file was generated on 2025-03-02 by Marcos Amores
+' This ReadMe file was generated on 2025-02-25 by Marcos Amores
 
 '
 ' General information
 '
 
 ' 1. Title:
-'     Absolute abundance calculator (v1.1.1)
+'     Absolute abundance calculator (v1.1.2)
 
 ' 2. Leading/corresponding author:
 '     Name: Chris Mays
@@ -15,7 +15,7 @@ Attribute VB_Name = "ReadMe"
 '     Email: cmays@ucc.ie
 
 ' 3. Date of present version:
-'     2025-03-02
+'     2025-02-25
 
 '
 ' Sharing/Access Information

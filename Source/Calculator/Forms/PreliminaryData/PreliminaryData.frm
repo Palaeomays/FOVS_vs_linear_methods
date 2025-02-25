@@ -33,7 +33,7 @@ End Sub
         
         ' X
         
-        If X <> 0 Then
+        If X <> Empty Then
             txt_X.Text = X
         Else
             txt_X.Text = ""
@@ -41,7 +41,7 @@ End Sub
         
         ' N
         
-        If N <> 0 Then
+        If N <> Empty Then
             txt_N.Text = N
         Else
             txt_N.Text = ""
@@ -49,7 +49,7 @@ End Sub
         
         ' N3C
         
-        If N3C <> 0 Then
+        If N3C <> Empty Then
             txt_N3c.Text = N3C
         Else
             txt_N3c.Text = ""
@@ -57,7 +57,7 @@ End Sub
         
         ' TimeFOV
         
-        If TimeFOV <> 0 Then
+        If TimeFOV <> Empty Then
             txt_TimeFOV.Text = TimeFOV
         Else
             txt_TimeFOV.Text = ""
@@ -65,7 +65,7 @@ End Sub
         
         ' TimeTotal
         
-        If TimeTotal <> 0 Then
+        If TimeTotal <> Empty Then
             txt_TimeTotal.Text = TimeTotal
         Else
             txt_TimeTotal.Text = ""
@@ -74,7 +74,7 @@ End Sub
         
         ' N1
         
-        If N1 <> 0 Then
+        If N1 <> Empty Then
             txt_N1.Text = N1
         Else
             txt_N1.Text = ""
@@ -82,7 +82,7 @@ End Sub
         
         ' Y1
         
-        If Y1 <> 0 Then
+        If Y1 <> Empty Then
             txt_Y1.Text = Y1
         Else
             txt_Y1.Text = ""
@@ -90,7 +90,7 @@ End Sub
         
         ' S1
         
-        If s1 <> 0 Then
+        If s1 <> Empty Then
             txt_s1.Text = s1
         Else
             txt_s1.Text = ""
@@ -98,7 +98,7 @@ End Sub
         
         ' LevelError
         
-        If LevelError <> 0 Then
+        If LevelError <> Empty Then
             txt_LevelError.Text = LevelError
         Else
             txt_LevelError.Text = ""
@@ -607,11 +607,11 @@ End Sub
                 eL_sigmabar = (FOVTransitionEffort * (1 + uhat) + (Y3x * (2 + uhat)) + Y3x / uhat) / (Y3x * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
             ElseIf Not LinearChosen Then
                 If FOVSTargetChosen Or TargetSuggested Then
-                    Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (FOVTransitionEffort / uhat)))) / ((Y3x * (Sqr(Y3x + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
-                    Nstar3E = (uhat / (((LevelError / 100) * (LevelError / 100)) - ((N1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (uhat * FOVTransitionEffort)))) / (Y3x * (Sqr(Y3x + (uhat * FOVTransitionEffort))))
+                    Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (FOVTransitionEffort * uhat)))) / ((Y3x * (Sqr(Y3x + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
+                    Nstar3E = (uhat / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (uhat * FOVTransitionEffort)))) / (Y3x * (Sqr(Y3x + (uhat * FOVTransitionEffort))))
                     eF_sigmabar = ((2 * Y3x) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr((Y3x + FOVTransitionEffort) * (Y3x + (uhat * FOVTransitionEffort)))))) / (Y3x * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
                 ElseIf FOVSMarkerChosen Or MarkerSuggested Then
-                    Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + (Sqr(Y3n + (FOVTransitionEffort / uhat)))) / ((Y3n * (Sqr(Y3n + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
+                    Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + (Sqr(Y3n + (FOVTransitionEffort * uhat)))) / ((Y3n * (Sqr(Y3n + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
                     Nstar3E = ((1 / uhat) / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3n + FOVTransitionEffort) + Sqr(Y3n + (FOVTransitionEffort / uhat))) / (Y3n * (Sqr(Y3n + (FOVTransitionEffort / uhat)))) 'TODO condition if LevelError is 0
                     eF_sigmabar = ((2 * (Y3n * uhat)) + (FOVTransitionEffort * (1 + uhat) + 2 * (Sqr(((Y3n * uhat) + FOVTransitionEffort) * ((Y3n * uhat) + (uhat * FOVTransitionEffort)))))) / ((Y3n * uhat) * ((LevelError / 100) * (LevelError / 100) - ((s1 / Y1) * (s1 / Y1) / N1)))
                 End If

@@ -108,7 +108,7 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
         InputEmptyS3 = False
     ElseIf txt_N3c.Value = 1 Then
         s3 = Sqr(txt_X_FOVS)
-        txt_S3.Value = s3
+        txt_S3.Value = Round(s3, 3)
         txt_S3.Enabled = True
         txt_S3.BackColor = RGB(255, 255, 255) ' White colour.
         InputEmptyS3 = False
@@ -146,6 +146,12 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
         CalculatorFOVSTarget.CommandButton_CalibrationFOV.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSTarget.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data ready)"
                 
+        CalculatorFOVSTarget.txt_N_FOVS.Enabled = True
+        CalculatorFOVSTarget.txt_N_FOVS.BackColor = RGB(255, 255, 255)
+        
+        CalculatorFOVSTarget.txt_N3E.Enabled = True
+        CalculatorFOVSTarget.txt_N3E.BackColor = RGB(255, 255, 255)
+                
         ' Refresh certain outputs.
         Y3x = X / N3C
                 
@@ -163,6 +169,14 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
         CalculatorFOVSTarget.CommandButton_CalibrationFOV.BackColor = RGB(245, 148, 146) ' Reddish color
         CalculatorFOVSTarget.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data missing)"
         
+        CalculatorFOVSTarget.txt_N_FOVS.Text = ""
+        CalculatorFOVSTarget.txt_N_FOVS.Enabled = False
+        CalculatorFOVSTarget.txt_N_FOVS.BackColor = RGB(224, 224, 224)
+        
+        CalculatorFOVSTarget.txt_N3E.Text = ""
+        CalculatorFOVSTarget.txt_N3E.Enabled = False
+        CalculatorFOVSTarget.txt_N3E.BackColor = RGB(224, 224, 224)
+        
             If Y3x <> Empty Then
                 CalculatorFOVSTarget.LabelResult_Y3x.Value = Empty
                 CalculatorFOVSTarget.LabelResult_Y3x.Enabled = False
@@ -173,6 +187,12 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
     ElseIf FOVSMarkerChosen And Not InputEmptyAny Then ' For FOVS Marker method
         CalculatorFOVSMarker.CommandButton_CalibrationFOV.BackColor = RGB(212, 236, 214) ' Greenish color
         CalculatorFOVSMarker.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data ready)"
+        
+        CalculatorFOVSMarker.txt_X_FOVS.Enabled = True
+        CalculatorFOVSMarker.txt_X_FOVS.BackColor = RGB(255, 255, 255)
+        
+        CalculatorFOVSMarker.txt_N3E.Enabled = True
+        CalculatorFOVSMarker.txt_N3E.BackColor = RGB(255, 255, 255)
         
         ' Refresh certain outputs.
         Y3n = N / N3C
@@ -190,6 +210,14 @@ Private Sub CommandButtonSaveCalibrationFOV_Click()
    ElseIf FOVSMarkerChosen And InputEmptyAny Then
         CalculatorFOVSMarker.CommandButton_CalibrationFOV.BackColor = RGB(245, 148, 146) ' Reddish color
         CalculatorFOVSMarker.CommandButton_CalibrationFOV.Caption = "Field of view (FOV) calibration count" & vbCrLf & "(data missing)"
+        
+        CalculatorFOVSMarker.txt_X_FOVS.Text = ""
+        CalculatorFOVSMarker.txt_X_FOVS.Enabled = False
+        CalculatorFOVSMarker.txt_X_FOVS.BackColor = RGB(224, 224, 224)
+        
+        CalculatorFOVSMarker.txt_N3E.Text = ""
+        CalculatorFOVSMarker.txt_N3E.Enabled = False
+        CalculatorFOVSMarker.txt_N3E.BackColor = RGB(224, 224, 224)
         
             If Y3n <> Empty Then
                 CalculatorFOVSMarker.LabelResult_Y3n.Value = Empty
