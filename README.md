@@ -5,7 +5,7 @@ This ReadMe file was generated on 2025-02-25 by Marcos Amores.
    
   The following has been developed for the manuscript "Field-of-view subsampling: A novel ‘exotic marker’ method for absolute abundances, validated by simulation and microfossil case studies".
 
-  The manuscript is presently under review; a preprint of the article is available [here](http://www.doi.org/10.48550/arXiv.2406.10921).
+  The manuscript has been accepted for publication in the journal PLoS One; you can access it here: https://doi.org/10.1371/journal.pone.0320887.
   
 ### Corresponding author and affiliation:
 
