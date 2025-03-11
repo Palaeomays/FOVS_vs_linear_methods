@@ -1,5 +1,20 @@
 Attribute VB_Name = "Changelog"
 '#####
+'# 1.1.3
+'#
+'# 2025-03-11
+'#####
+
+'# GUI
+'- Added button to the starter screen that links to citing article.
+
+'# Calculations
+'- Concentration value is now shown for the FOVS screens without the need for the optional Optimisation data screen to be filled.
+
+'# Text
+'- Added DOI of citing article to introductory text.
+
+'#####
 '# 1.1.2
 '#
 '# 2025-02-25

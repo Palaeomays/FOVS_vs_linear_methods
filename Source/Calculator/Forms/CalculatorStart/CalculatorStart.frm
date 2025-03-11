@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorStart 
-   Caption         =   "Absolute abundance calculator v1.1.2"
-   ClientHeight    =   7095
+   Caption         =   "Absolute abundance calculator v1.1.3"
+   ClientHeight    =   7635
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   6015
@@ -25,6 +25,10 @@ Private Sub CommandButton_Glossary_Click()
     Glossary.Show
 End Sub
 
+Private Sub CommandButton_WebLink_Click()
+    ThisWorkbook.FollowHyperlink Address:="https://doi.org/10.1371/journal.pone.0320887", NewWindow:=True
+End Sub
+
 '
 ' Startup
 '
@@ -34,7 +38,7 @@ Private Sub UserForm_Initialize()
     'Introductory message. 'TODO include DOI when ready.
     If Not IntroductionGiven Then
         IntroductionGiven = True
-        MsgBox "This calculator will assist in:" & vbNewLine & vbNewLine & "1) determining which method is most efficient for estimating absolute abundances in your population;" & vbNewLine & "2) estimating the absolute abundances of your specimens (and their associated precisions); and" & vbNewLine & "3) predicting the amount of effort required for a given precision." & vbNewLine & vbNewLine & "The next screen will ask for preliminary count data to determine the most efficient method. For this, please have a timer on hand, or use the provided timer before commencing counting. Approximately 10 fields of view are sufficient for most populations." & vbNewLine & vbNewLine & "Alternatively, you may wish to skip this step by selecting either the 'Linear' or 'FOVS' buttons." & vbNewLine & vbNewLine & "For more details on the terms used, the formulae and when to use these methods, see the original manuscript (https://doi.org/10.XXXXXX).", vbInformation
+        MsgBox "This calculator will assist in:" & vbNewLine & vbNewLine & "1) determining which method is most efficient for estimating absolute abundances in your population;" & vbNewLine & "2) estimating the absolute abundances of your specimens (and their associated precisions); and" & vbNewLine & "3) predicting the amount of effort required for a given precision." & vbNewLine & vbNewLine & "The next screen will ask for preliminary count data to determine the most efficient method. For this, please have a timer on hand, or use the provided timer before commencing counting. Approximately 10 fields of view are sufficient for most populations." & vbNewLine & vbNewLine & "Alternatively, you may wish to skip this step by selecting either the 'Linear' or 'FOVS' buttons." & vbNewLine & vbNewLine & "For more details on the terms used, the formulae and when to use these methods, see the original manuscript (https://doi.org/10.1371/journal.pone.0320887).", vbInformation
     Else
     End If
 

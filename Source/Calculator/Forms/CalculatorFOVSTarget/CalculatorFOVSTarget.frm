@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} CalculatorFOVSTarget 
-   Caption         =   "Absolute abundance calculator v1.1.2 - FOVS method (Target focus)"
+   Caption         =   "Absolute abundance calculator v1.1.3 - FOVS method (Target focus)"
    ClientHeight    =   6285
    ClientLeft      =   120
    ClientTop       =   465
@@ -619,6 +619,38 @@ Private Sub CommandButton_Calculate_FOVS_Click()
     End If
 
     ' Perform visible calculations
+    
+    If Not SavedMarkerDetails Then
+        MsgBox "Please enter marker and sample characteristics.", vbExclamation, "Input Required"
+        MarkerCharacteristics.Show
+        Exit Sub
+    End If
+    
+    Dim c As Double ' Mean number of target specimens per unit mass or volume
+    If xhat <> Empty Then
+        ' C = (xhat * Y1 * N1) / (N * Vline) ' TODO Include as in Linear? Going with below code.
+        c = (xhat * Y1 * N1) / (N * Y2)
+    Else
+        c = (uhat * Y1 * N1) / (N * Y2)
+    End If
+    
+    LabelResult_Concentration_FOVS = Format(c, "0")
+    txt_ConcentrationUnits = SizeUnit
+    
+    'Enable and colour output backgrounds to white
+    If IsNumeric(LabelResult_Concentration_FOVS.Value) Then
+        LabelResult_Concentration_FOVS.Enabled = True
+        LabelResult_Concentration_FOVS.BackColor = RGB(255, 255, 255)
+    Else
+        LabelResult_Concentration_FOVS.BackColor = RGB(224, 224, 224)
+    End If
+    
+    If Len(txt_ConcentrationUnits) > 0 Then
+        txt_ConcentrationUnits.Enabled = True
+        txt_ConcentrationUnits.BackColor = RGB(255, 255, 255)
+    Else
+        txt_ConcentrationUnits.BackColor = RGB(224, 224, 224)
+    End If
           
     If FOVTransitionEffort = 0 Then
         MsgBox "Please enter Optimisation Data.", vbExclamation, "Input Required"
@@ -675,11 +707,7 @@ Private Sub CommandButton_Calculate_FOVS_Click()
     
     LevelError = CDbl(txt_LevelError.Value) 'TODO Can lead to negatives later on if less than 5.
     
-    If FOVTransitionEffort <> 0 And Not SavedMarkerDetails Then
-        MsgBox "Please enter marker and sample characteristics.", vbExclamation, "Input Required"
-        MarkerCharacteristics.Show
-        Exit Sub
-    ElseIf FOVTransitionEffort <> 0 And SavedMarkerDetails Then
+    If FOVTransitionEffort <> 0 And SavedMarkerDetails Then
         Nstar3C = (1 / (((LevelError / 100) * (LevelError / 100)) - ((s1 / Y1) * (s1 / Y1) / N1))) * (Sqr(Y3x + FOVTransitionEffort) + (Sqr(Y3x + (FOVTransitionEffort * uhat)))) / ((Y3x * (Sqr(Y3x + FOVTransitionEffort)))) 'TODO condition if LevelError is 0
         LabelResult_OptimalCalibrationFOV.Text = Format(Nstar3C, "0")
         
@@ -731,31 +759,6 @@ Private Sub CommandButton_Calculate_FOVS_Click()
     Dim sigma_Fx As Double ' Total target concentration standard error with FOVS method
     sigma_Fx = 100 * Sqr((((s1 / Y1) / Sqr(N1)) ^ 2) + ((s3P / Sqr(N3C)) ^ 2) + (Sqr(N) / N) ^ 2)
     LabelResult_ConcentrationStandardError_FOVS.Text = Format(sigma_Fx, "0.00")
-    
-    If xhat <> Empty Then
-        Dim c As Double ' Mean number of target specimens per unit mass or volume
-        ' C = (xhat * Y1 * N1) / (N * Vline) ' TODO Include as in Linear? Going with below code.
-        c = (xhat * Y1 * N1) / (N * Y2)
-        
-        LabelResult_Concentration_FOVS = Format(c, "0")
-        txt_ConcentrationUnits = SizeUnit
-    Else
-    End If
-    
-    'Enable and colour output backgrounds to white
-    If IsNumeric(LabelResult_Concentration_FOVS.Value) Then
-        LabelResult_Concentration_FOVS.Enabled = True
-        LabelResult_Concentration_FOVS.BackColor = RGB(255, 255, 255)
-    Else
-        LabelResult_Concentration_FOVS.BackColor = RGB(224, 224, 224)
-    End If
-    
-    If Len(txt_ConcentrationUnits) > 0 Then
-        txt_ConcentrationUnits.Enabled = True
-        txt_ConcentrationUnits.BackColor = RGB(255, 255, 255)
-    Else
-        txt_ConcentrationUnits.BackColor = RGB(224, 224, 224)
-    End If
     
     If IsNumeric(LabelResult_ConcentrationStandardError_FOVS.Value) Then
         LabelResult_ConcentrationStandardError_FOVS.Enabled = True
