@@ -1,5 +1,5 @@
 # FOVS_vs_linear_methods
-This ReadMe file was generated on 2025-02-25 by Marcos Amores.
+This ReadMe file was generated on 2025-03-11 by Marcos Amores.
 
 ## General information
    
@@ -24,7 +24,7 @@ This ReadMe file was generated on 2025-02-25 by Marcos Amores.
 
 ### Latest version:
 
-  v1.1.2
+  v1.1.3
 
 
 ### Date of present version:
